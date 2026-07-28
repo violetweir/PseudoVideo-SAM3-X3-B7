@@ -1,0 +1,21 @@
+# Copy this file to configs/reproduction.toml and edit paths for your machine.
+
+project_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7"
+work_dir = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/reproduction_v1"
+data_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/data"
+
+# External dependency roots. SC-SAM is intentionally external because the
+# local historical checkout did not include a redistributable license.
+sc_sam_root = "/Data_8TB/lht/SC-SAM"
+sam3_checkpoint = "/Data_8TB/lht/models/modelscope/models/facebook--sam3/snapshots/master/sam3.pt"
+
+# Use env-specific Python executables or "conda run -n ..." wrappers.
+sam3_python = "/home/violet/anaconda3/envs/sam3/bin/python"
+student_python = "/home/violet/anaconda3/envs/mkunet_mamba/bin/python"
+
+seed = 2026
+canvas_size = 512
+knn_k = 20
+image_size = 256
+max_iterations = 40000
+num_workers = 4

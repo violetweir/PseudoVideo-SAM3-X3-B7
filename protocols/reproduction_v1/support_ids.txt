@@ -1,0 +1,16 @@
+CVC-ClinicDB::156
+CVC-ClinicDB::162
+CVC-ClinicDB::199
+CVC-ClinicDB::24
+CVC-ClinicDB::377
+CVC-ClinicDB::437
+CVC-ClinicDB::494
+CVC-ClinicDB::558
+kvasir-seg::cju2ntxtdzlvu0799xl3j9pan
+kvasir-seg::cju428k5fldt108177s6g6f45
+kvasir-seg::cju42qet0lsq90871e50xbnuv
+kvasir-seg::cju5bmhdcafs909878qfzrqzi
+kvasir-seg::cju6z2616wqbk07555bvnuyr1
+kvasir-seg::cju83ipu3jwpx0801z5pvguf8
+kvasir-seg::cju84jdl9kv0i0871eog9b3i9
+kvasir-seg::cju87q6yoneim0871dl4phvkd

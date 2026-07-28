@@ -1,0 +1,18 @@
+name: mkunet_mamba
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - pillow
+  - scipy
+  - scikit-learn
+  - tqdm
+  - pytorch
+  - torchvision
+  - pytorch-cuda=12.1
+  - pip:
+      - opencv-python

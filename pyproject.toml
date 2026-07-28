@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pseudo-video-sam3-x3-b7"
+version = "0.1.0"
+description = "Reproduction code for pseudo-video SAM3 routing and S27 X3+B7 student-audited selection."
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pillow",
+  "scipy",
+  "scikit-learn",
+  "tqdm",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

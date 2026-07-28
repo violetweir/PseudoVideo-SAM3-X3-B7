@@ -1,0 +1,16 @@
+{"merged_id": "CVC-ClinicDB::156", "sample_id": "156", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::162", "sample_id": "162", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::199", "sample_id": "199", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::24", "sample_id": "24", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::377", "sample_id": "377", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::437", "sample_id": "437", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::494", "sample_id": "494", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "CVC-ClinicDB::558", "sample_id": "558", "source_dataset": "CVC-ClinicDB", "split": "train"}
+{"merged_id": "kvasir-seg::cju2ntxtdzlvu0799xl3j9pan", "sample_id": "cju2ntxtdzlvu0799xl3j9pan", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju428k5fldt108177s6g6f45", "sample_id": "cju428k5fldt108177s6g6f45", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju42qet0lsq90871e50xbnuv", "sample_id": "cju42qet0lsq90871e50xbnuv", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju5bmhdcafs909878qfzrqzi", "sample_id": "cju5bmhdcafs909878qfzrqzi", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju6z2616wqbk07555bvnuyr1", "sample_id": "cju6z2616wqbk07555bvnuyr1", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju83ipu3jwpx0801z5pvguf8", "sample_id": "cju83ipu3jwpx0801z5pvguf8", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju84jdl9kv0i0871eog9b3i9", "sample_id": "cju84jdl9kv0i0871eog9b3i9", "source_dataset": "kvasir-seg", "split": "train"}
+{"merged_id": "kvasir-seg::cju87q6yoneim0871dl4phvkd", "sample_id": "cju87q6yoneim0871dl4phvkd", "source_dataset": "kvasir-seg", "split": "train"}

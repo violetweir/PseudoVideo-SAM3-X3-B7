@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: "Pseudo-Video SAM3 X3+B7"
+message: "If you use this reproduction package, please cite the associated paper or preprint."
+type: software
+authors:
+  - name: "Pseudo-Video SAM3 X3+B7 contributors"
+date-released: 2026-07-28
+version: "0.1.0"
+license: BSD-3-Clause
