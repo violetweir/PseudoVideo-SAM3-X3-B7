@@ -31,8 +31,20 @@ score = (max(q_return, 1e-6) * max(q_multi, 1e-6)^2 * max(q_model, 1e-6)^2)^0.2
 
 ## Pipeline
 
+There are two levels of reproduction:
+
+- `scripts/run_method_ladder.py` covers the full experimental ladder, starting
+  from single-image SAM3 and moving through two-frame/multi-step pseudo-video,
+  SAM3 adaptation diagnostics, student training, and final B7 selection.
+- `scripts/run_pipeline.py` is the clean final mainline from the fixed
+  pseudo-video protocol to `S27 X3 Final+B7`.
+
 ```text
-16 fixed train GT anchors
+B00 single-image SAM3 baseline
+  -> T18 two-frame support-to-query pseudo-video
+  -> E1 multi-step star/chain/hybrid propagation
+  -> T21 frozen three-route pseudo-video
+  -> 16 fixed train GT anchors
   -> T21 frozen SAM3 pseudo-video routes
   -> 568 original high-confidence pseudo labels
   -> T24 committee students: S2 val-best, S2 final, S3 final
@@ -105,6 +117,7 @@ is `protocols/reproduction_v1/splits.jsonl`.
 cp configs/reproduction.example.toml configs/reproduction.toml
 # edit paths in configs/reproduction.toml
 
+python scripts/run_method_ladder.py --config configs/reproduction.toml --dry-run
 python scripts/run_pipeline.py --config configs/reproduction.toml --dry-run
 python scripts/run_pipeline.py --config configs/reproduction.toml
 ```
