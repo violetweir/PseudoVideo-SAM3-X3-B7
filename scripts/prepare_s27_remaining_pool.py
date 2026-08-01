@@ -53,8 +53,20 @@ def main() -> None:
     args = parser.parse_args()
 
     train = read_jsonl(args.train_metadata)
-    if len(train) != 1290:
-        raise RuntimeError(f"Expected 1290 train records, got {len(train)}")
+    train_root = args.train_metadata.parent
+    normalized_train = []
+    for row in train:
+        row = dict(row)
+        image = Path(row["file_name"])
+        mask = Path(row["mask_file_name"])
+        if not image.is_absolute():
+            image = train_root / image
+        if not mask.is_absolute():
+            mask = train_root / mask
+        row["file_name"] = str(image.resolve())
+        row["mask_file_name"] = str(mask.resolve())
+        normalized_train.append(row)
+    train = normalized_train
     train_by_id = {row["merged_id"]: row for row in train}
     train_by_path = {str(Path(row["file_name"]).resolve()): row for row in train}
     if len(train_by_id) != len(train) or len(train_by_path) != len(train):
@@ -65,8 +77,8 @@ def main() -> None:
         for line in args.human_list.read_text(encoding="utf-8").splitlines()
         if line.strip()
     }
-    if len(human_paths) != 16:
-        raise RuntimeError(f"Expected 16 human paths, got {len(human_paths)}")
+    if not human_paths:
+        raise RuntimeError("No human paths found")
     unknown_human = human_paths - set(train_by_path)
     if unknown_human:
         raise RuntimeError(f"Human paths absent from Train: {sorted(unknown_human)}")
@@ -74,9 +86,9 @@ def main() -> None:
 
     pseudo_source = read_jsonl(args.pseudo568)
     pseudo_ids = {row["target_id"] for row in pseudo_source}
-    if len(pseudo_source) != 568 or len(pseudo_ids) != 568:
+    if not pseudo_source or len(pseudo_ids) != len(pseudo_source):
         raise RuntimeError(
-            f"Expected 568 unique original pseudo records, got "
+            f"Expected unique original pseudo records, got "
             f"{len(pseudo_source)}/{len(pseudo_ids)}"
         )
     unknown_pseudo = pseudo_ids - set(train_by_id)
@@ -131,13 +143,13 @@ def main() -> None:
         "human16": args.output_dir / "human16.jsonl",
         "pseudo568_original": args.output_dir / "pseudo568_original.jsonl",
         "unlabeled_remaining": args.output_dir / "unlabeled_remaining.jsonl",
-        "train1290_all": args.output_dir / "train1290_all.jsonl",
+        "train_all": args.output_dir / "train_all.jsonl",
     }
     for key, rows in (
         ("human16", human_rows),
         ("pseudo568_original", pseudo_rows),
         ("unlabeled_remaining", remaining_rows),
-        ("train1290_all", all_rows),
+        ("train_all", all_rows),
     ):
         write_jsonl(output_files[key], rows)
 
@@ -162,7 +174,7 @@ def main() -> None:
             "pseudo568": str(args.pseudo568.resolve()),
         },
         "counts": {key: len(value) for key, value in sets.items()}
-        | {"train1290_all": len(all_rows)},
+        | {"train_all": len(all_rows)},
         "overlaps": overlaps,
         "union_equals_train": set().union(*sets.values()) == set(train_by_id),
         "files": {

@@ -35,12 +35,15 @@ There are two levels of reproduction:
 
 - `scripts/run_method_ladder.py` covers the full experimental ladder, starting
   from single-image SAM3 and moving through two-frame/multi-step pseudo-video,
-  SAM3 adaptation diagnostics, student training, and final B7 selection.
+  SC-SAM/SynFoC low-label students, SAM3 adaptation diagnostics, student
+  distillation, and final B7 selection.
 - `scripts/run_pipeline.py` is the clean final mainline from the fixed
   pseudo-video protocol to `S27 X3 Final+B7`.
 
 ```text
 B00 single-image SAM3 baseline
+  -> T19 SC-SAM 16GT low-label student baseline
+  -> T20 SynFoC 16GT low-label student baseline
   -> T18 two-frame support-to-query pseudo-video
   -> E1 multi-step star/chain/hybrid propagation
   -> T21 frozen three-route pseudo-video
@@ -66,8 +69,8 @@ SAM3 propagation anchors in this public mainline.
 
 ## External Dependencies
 
-This repository does not vendor SAM3, SC-SAM, CVC-ClinicDB, Kvasir-SEG, or model
-checkpoints. Provide them locally and set paths in `configs/reproduction.toml`.
+This repository vendors the SC-SAM and SynFoC student-baseline code under
+`third_party/`. SAM3, datasets, and model checkpoints are still external.
 
 SAM3 commands must run in the SAM3 environment. Student commands must run in the
 SC-SAM/student environment.
@@ -79,9 +82,8 @@ SAM3:    /home/violet/anaconda3/envs/sam3/bin/python
 Student: /home/violet/anaconda3/envs/mkunet_mamba/bin/python
 ```
 
-SC-SAM is loaded through `SC_SAM_ROOT`. The historical local SC-SAM checkout did
-not include a redistributable license, so it is intentionally treated as an
-external dependency.
+SC-SAM is loaded through `SC_SAM_ROOT` and defaults to `third_party/SC-SAM`.
+SynFoC T20 defaults to `third_party/SynFoC-T20`.
 
 ## Data Layout
 
@@ -131,10 +133,11 @@ python scripts/run_pipeline.py \
   --to-stage t25_b7_test
 ```
 
-For the original server, set:
+For the original server, the default config already points to the vendored
+SC-SAM copy. You can still override it with:
 
 ```bash
-export SC_SAM_ROOT=/Data_8TB/lht/SC-SAM
+export SC_SAM_ROOT=/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/third_party/SC-SAM
 ```
 
 ## Important Reproduction Notes
@@ -160,5 +163,5 @@ protocols/reproduction_v1 fixed path-free split and support protocol
 scripts/                 reproduction stages
 src/pvseg/               small shared utilities
 docs/                    protocol and release notes
-third_party/             placeholder for external checkouts, not vendored
+third_party/             vendored SC-SAM and SynFoC student baselines
 ```

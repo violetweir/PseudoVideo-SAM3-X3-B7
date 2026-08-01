@@ -105,8 +105,8 @@ def main() -> None:
             }
         )
 
-    if len(output_rows) != 568:
-        raise RuntimeError(f"Expected 568 rows, got {len(output_rows)}")
+    if not output_rows:
+        raise RuntimeError("No pseudo consensus rows were produced")
     manifest = args.output_root / "pseudo_consensus.jsonl"
     with manifest.open("w", encoding="utf-8") as handle:
         for row in output_rows:

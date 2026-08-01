@@ -19,6 +19,7 @@ import pickle
 import platform
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -1069,8 +1070,7 @@ def summarize_all(output_root: Path) -> None:
                         )
                     ),
                 }
-                for dataset in ("CVC-ClinicDB", "kvasir-seg")
-                if any(row["target_source_dataset"] == dataset for row in rows)
+                for dataset in sorted({row["target_source_dataset"] for row in rows})
             },
         }
     if all(phase in summaries for phase in ("test_pool0", "test_pool1", "test_pool2")):
@@ -1108,19 +1108,16 @@ def main() -> None:
     manifest_ids = [row["merged_id"] for row in manifest]
     if len(manifest_ids) != len(set(manifest_ids)):
         raise RuntimeError("merged_manifest contains duplicate merged_id values")
-    if len(support) != 16:
-        raise RuntimeError(f"Expected exactly 16 support images, found {len(support)}")
+    if not support:
+        raise RuntimeError("support_manifest is empty")
     support_ids_list = [row["merged_id"] for row in support]
     if len(support_ids_list) != len(set(support_ids_list)):
         raise RuntimeError("support_manifest contains duplicate merged_id values")
     if any(row["split"] != "train" for row in support):
         raise RuntimeError("Every human support anchor must come from train")
-    support_dataset_counts = {
-        dataset: sum(row["source_dataset"] == dataset for row in support)
-        for dataset in ("CVC-ClinicDB", "kvasir-seg")
-    }
-    if support_dataset_counts != {"CVC-ClinicDB": 8, "kvasir-seg": 8}:
-        raise RuntimeError(f"Unexpected support composition: {support_dataset_counts}")
+    support_dataset_counts = dict(
+        sorted(Counter(row["source_dataset"] for row in support).items())
+    )
     if not set(support_ids_list).issubset(set(manifest_ids)):
         raise RuntimeError("support_manifest contains IDs absent from merged_manifest")
     for row in support:

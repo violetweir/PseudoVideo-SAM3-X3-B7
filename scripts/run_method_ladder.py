@@ -25,6 +25,8 @@ STAGES = (
     "prepare_protocol",
     "b00_single_image_sam3_test",
     "b00_single_image_sam3_val",
+    "t19_scsam_16gt",
+    "t20_synfoc_16gt",
     "t18_two_frame_prepare",
     "t18_two_frame_eval",
     "e1_multistep_prepare",
@@ -65,6 +67,10 @@ def load_config(path: Path) -> dict:
     cfg.setdefault("sam3_python", sys.executable)
     cfg.setdefault("student_python", sys.executable)
     cfg.setdefault("sam3_checkpoint", "")
+    cfg.setdefault("sam_vit_b_checkpoint", "")
+    cfg.setdefault("medsam_checkpoint", "")
+    cfg.setdefault("sc_sam_root", str(ROOT / "third_party/SC-SAM"))
+    cfg.setdefault("synfoc_root", str(ROOT / "third_party/SynFoC-T20"))
     cfg.setdefault("max_iterations", 40000)
     return cfg
 
@@ -130,6 +136,26 @@ def main() -> None:
             "--checkpoint", checkpoint,
             "--output-root", ladder / "b00_single_image_sam3",
             "--resume",
+        ],
+        "t19_scsam_16gt": [
+            student_py, scripts / "run_t19_scsam_baseline.py",
+            "--python", student_py,
+            "--sc-sam-root", cfg["sc_sam_root"],
+            "--data-path", data_root,
+            "--labeled-list", protocol / "frozen_labeled_images.txt",
+            "--output-dir", ladder / "t19_scsam_16gt",
+            "--sam-checkpoint", cfg["sam_vit_b_checkpoint"],
+            "--max-iterations", str(cfg["max_iterations"]),
+        ],
+        "t20_synfoc_16gt": [
+            student_py, scripts / "run_t20_synfoc_baseline.py",
+            "--python", student_py,
+            "--synfoc-root", cfg["synfoc_root"],
+            "--data-path", data_root,
+            "--labeled-list", protocol / "frozen_labeled_images.txt",
+            "--output-dir", ladder / "t20_synfoc_16gt",
+            "--medsam-checkpoint", cfg["medsam_checkpoint"],
+            "--max-iterations", str(cfg["max_iterations"]),
         ],
         "t18_two_frame_prepare": [
             student_py, scripts / "prepare_t18_full_retrieval.py",

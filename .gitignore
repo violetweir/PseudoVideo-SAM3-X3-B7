@@ -5,6 +5,4 @@ __pycache__/
 work/
 data/
 checkpoints/
-third_party/*
-!third_party/.gitkeep
 configs/reproduction.toml

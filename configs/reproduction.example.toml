@@ -4,10 +4,12 @@ project_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7"
 work_dir = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/reproduction_v1"
 data_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/data"
 
-# External dependency roots. SC-SAM is intentionally external because the
-# local historical checkout did not include a redistributable license.
-sc_sam_root = "/Data_8TB/lht/SC-SAM"
+# Student baseline roots. These default to the vendored copies in third_party.
+sc_sam_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/third_party/SC-SAM"
+synfoc_root = "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/third_party/SynFoC-T20"
 sam3_checkpoint = "/Data_8TB/lht/models/modelscope/models/facebook--sam3/snapshots/master/sam3.pt"
+sam_vit_b_checkpoint = "/Data_8TB/lht/models/sam_vit_b_01ec64.pth"
+medsam_checkpoint = "/Data_8TB/lht/models/medsam_vit_b.pth"
 
 # Use env-specific Python executables or "conda run -n ..." wrappers.
 sam3_python = "/home/violet/anaconda3/envs/sam3/bin/python"

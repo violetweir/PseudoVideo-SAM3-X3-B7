@@ -12,6 +12,8 @@ This project has two entry points:
 | Stage | Purpose | Main Script |
 |---|---|---|
 | B00 | SAM3 predicts each image independently with a generic category-free prompt. | `run_b00_sam3_single_image.py` |
+| T19 | SC-SAM 16GT low-label student baseline on the fixed merged protocol. | `run_t19_scsam_baseline.py` |
+| T20 | SynFoC 16GT low-label student baseline on the fixed merged protocol. | `run_t20_synfoc_baseline.py` |
 | T17 | Single-image candidate pools and fixed 16 train GT support protocol. | `prepare_t17_autonomous_1pct.py`, `extract_t17_sam3_candidates.py` |
 | T18 | Two-frame pseudo-video: retrieve one similar support image and propagate support visual memory to the query. | `prepare_t18_full_retrieval.py`, `eval_t18_pseudovideo_pilot.py` |
 | E1 | Multi-step propagation study with depths K=1..5 and star/chain/hybrid memory structures. | `prepare_e1_multistep.py`, `eval_e1_multistep.py` |
@@ -27,6 +29,9 @@ B00 answers: how far does SAM3 get without support images or pseudo-video memory
 
 T18 answers: can one annotated support image guide a different query image through
 SAM3 video memory?
+
+T19/T20 answer: how strong are ordinary low-label students when trained on the
+same 16 support images, before adding SAM3 pseudo labels?
 
 E1 answers: does increasing pseudo-video depth help or hurt, and are star,
 chain, or hybrid structures more stable?

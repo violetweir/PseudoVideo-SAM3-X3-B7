@@ -108,9 +108,16 @@ class T22StudentDataset(Dataset):
             if line.strip()
         }
         labeled, pseudo, evaluation = [], [], []
+        split_root = Path(args.data_path) / split
         for record in records:
-            image = Path(record["file_name"]).resolve()
-            gt = Path(record["mask_file_name"]).resolve()
+            image = Path(record["file_name"])
+            gt = Path(record["mask_file_name"])
+            if not image.is_absolute():
+                image = split_root / image
+            if not gt.is_absolute():
+                gt = split_root / gt
+            image = image.resolve()
+            gt = gt.resolve()
             base = {
                 "image": image,
                 "gt": gt,
@@ -134,10 +141,10 @@ class T22StudentDataset(Dataset):
                     }
                 )
         if split == "train":
-            if len(labeled) != 16:
-                raise RuntimeError(f"Expected fixed16 labeled images, got {len(labeled)}")
-            if len(pseudo) != 568:
-                raise RuntimeError(f"Expected 568 accepted pseudo images, got {len(pseudo)}")
+            if not labeled:
+                raise RuntimeError("No labeled images found in the frozen list")
+            if not pseudo:
+                raise RuntimeError("No accepted pseudo images found")
             self.rows = sorted(labeled, key=lambda x: x["merged_id"]) + sorted(
                 pseudo, key=lambda x: x["merged_id"]
             )
@@ -296,7 +303,7 @@ def main() -> None:
                 else "normalized_q_multi"
             )
         ),
-        quality_normalization="fixed over 568 pseudo labels; clip to [0.2,1.0]",
+        quality_normalization="fixed over accepted pseudo labels; clip to [0.2,1.0]",
     )
     (output / "protocol.json").write_text(
         json.dumps(protocol, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

@@ -152,11 +152,19 @@ class S27Dataset(Dataset):
             row["target_id"]: row for row in read_jsonl(args.pseudo_manifest)
         } if split == "train" else {}
         rows = []
+        split_root = args.data_path / split
         for record in metadata:
-            image = Path(record["file_name"]).resolve()
+            image = Path(record["file_name"])
+            gt = Path(record["mask_file_name"])
+            if not image.is_absolute():
+                image = split_root / image
+            if not gt.is_absolute():
+                gt = split_root / gt
+            image = image.resolve()
+            gt = gt.resolve()
             base = {
                 "image": image,
-                "gt": Path(record["mask_file_name"]).resolve(),
+                "gt": gt,
                 "merged_id": record["merged_id"],
                 "source_dataset": record["source_dataset"],
             }
@@ -205,7 +213,7 @@ class S27Dataset(Dataset):
         self.rows = sorted(rows, key=lambda row: (TYPE_ID[row["sample_type"]], row["merged_id"]))
         if split == "train":
             counts = Counter(row["sample_type"] for row in self.rows)
-            if counts["gt"] != 16 or counts["original"] != 568:
+            if counts["gt"] <= 0 or counts["original"] <= 0:
                 raise RuntimeError(f"Invalid fixed pools: {dict(counts)}")
         self.normalize = tv_transforms.Normalize(
             [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]

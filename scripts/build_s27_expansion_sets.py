@@ -131,10 +131,11 @@ def main() -> None:
     for row in original:
         row["area_bin"] = assign_area_bin(row["area_ratio"], q1, q2)
 
-    train_total = args.train_cvc + args.train_kvasir
+    original_domain_counts = Counter(row["dataset"] for row in original)
+    train_total = sum(original_domain_counts.values())
     domain_ratio = {
-        "CVC-ClinicDB": args.train_cvc / train_total,
-        "kvasir-seg": args.train_kvasir / train_total,
+        dataset: count / train_total
+        for dataset, count in sorted(original_domain_counts.items())
     }
     safe_all = sorted(tier_a + tier_b, key=lambda row: (-row["q_route"], row["target_id"]))
     a_sorted = sorted(tier_a, key=lambda row: (-row["q_route"], row["target_id"]))
@@ -162,7 +163,7 @@ def main() -> None:
         write_jsonl(output / "pseudo_manifest.jsonl", rows)
         summary = {
             "experiment": name,
-            "human_gt": 16,
+            "human_gt": None,
             "original_pseudo": len(original),
             "new_tier_a": sum(row.get("tier") == "A" for row in new_rows),
             "new_tier_b": sum(row.get("tier") == "B" for row in new_rows),
@@ -180,13 +181,13 @@ def main() -> None:
         summaries[name] = summary
     global_summary = {
         "tier_counts": {"A": len(tier_a), "B": len(tier_b), "C": len(tier_c)},
-        "original568_quality_normalization": {
+        "original_pseudo_quality_normalization": {
             "q_multi_min": q_min,
             "q_multi_max": q_max,
             "clip": [0.2, 1.0],
             "fixed_over_original568_only": True,
         },
-        "original568_area_terciles": {"q33": q1, "q67": q2},
+        "original_pseudo_area_terciles": {"q33": q1, "q67": q2},
         "train_domain_ratio": domain_ratio,
         "sets": summaries,
     }

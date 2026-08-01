@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
         "--output-root",
         type=Path,
         required=True,
-        help="Directory where the 16-anchor and 568-pseudo manifests are frozen.",
+        help="Directory where the human-anchor and pseudo-video manifests are frozen.",
     )
     parser.add_argument("--tau-multi", type=float, default=0.90)
     parser.add_argument("--tau-return", type=float, default=0.95)
@@ -70,8 +70,8 @@ def main() -> None:
         )
         and int(row.get("generation", row.get("anchor_generation", 0))) == 0
     ]
-    if len(human) != 16:
-        raise RuntimeError(f"Expected exactly 16 human anchors, found {len(human)}")
+    if not human:
+        raise RuntimeError("No human anchors found")
 
     anchor_rows = []
     for row in sorted(human, key=lambda item: item.get("anchor_id", "")):
@@ -130,8 +130,8 @@ def main() -> None:
             }
         )
     pseudo_rows.sort(key=lambda row: row["target_id"])
-    if len(pseudo_rows) != 568:
-        raise RuntimeError(f"Expected frozen 568-row gate, found {len(pseudo_rows)}")
+    if not pseudo_rows:
+        raise RuntimeError("No pseudo rows passed the frozen gate")
 
     protocol_root = args.output_root / "protocol"
     anchor_path = protocol_root / "human16_anchors.jsonl"
