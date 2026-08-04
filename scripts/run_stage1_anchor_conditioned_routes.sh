@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+PY=/home/violet/anaconda3/envs/sam3/bin/python
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-1}"
+
+for mode in anchor_conditioned_target_pooling anchor_conditioned_patch_correspondence
+do
+  echo "===== ${mode} ====="
+  "${PY}" scripts/stage1_feature_knn_routes.py \
+    --mode "${mode}" \
+    --max-bridge 3 \
+    --beam-width 32
+done
