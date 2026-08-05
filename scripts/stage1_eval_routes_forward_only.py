@@ -117,13 +117,15 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--mode", required=True)
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--split", choices=("validation", "test"), default="test")
     parser.add_argument("--canvas", type=int, default=512)
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
     mode_root = args.root / args.mode
-    routes = sorted(read_jsonl(mode_root / "test_pool0_stage1/routes.jsonl"), key=route_sort_key)
-    eval_root = mode_root / "eval_base_no_ft_b7_forward"
+    routes = sorted(read_jsonl(mode_root / f"{args.split}_pool0_stage1/routes.jsonl"), key=route_sort_key)
+    eval_name = "eval_base_no_ft_b7_forward" if args.split == "test" else f"eval_base_no_ft_b7_forward_{args.split}"
+    eval_root = mode_root / eval_name
     eval_root.mkdir(parents=True, exist_ok=True)
     model = build_sam3_video_model(
         checkpoint_path=str(args.checkpoint.resolve()),

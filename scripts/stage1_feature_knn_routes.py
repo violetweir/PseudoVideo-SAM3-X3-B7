@@ -258,10 +258,11 @@ def freeze_routes(
     records: list[dict[str, Any]],
     support: list[dict[str, Any]],
     state: dict[str, Any],
+    split: str,
     max_bridge: int,
     beam_width: int,
 ) -> list[dict[str, Any]]:
-    phase = output_root / mode / "test_pool0_stage1"
+    phase = output_root / mode / f"{split}_pool0_stage1"
     routes_path = phase / "routes.jsonl"
     if routes_path.exists():
         return read_jsonl(routes_path)
@@ -270,7 +271,7 @@ def freeze_routes(
     state["id_to_index"] = id_to_index
     train_indices = [i for i, row in enumerate(records) if row["split"] == "train"]
     anchors = t21.human_pool(support, 512)
-    targets = [row for row in records if row["split"] == "test"]
+    targets = [row for row in records if row["split"] == split]
     rank_cache = build_rank_cache(state, records, support, train_indices)
     routes = []
     for target_no, target in enumerate(sorted(targets, key=lambda row: row["merged_id"]), start=1):
@@ -311,6 +312,7 @@ def freeze_routes(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=MODES, required=True)
+    parser.add_argument("--split", choices=("validation", "test"), default="test")
     parser.add_argument("--max-bridge", type=int, default=3)
     parser.add_argument("--beam-width", type=int, default=32)
     parser.add_argument("--output-root", type=Path, default=ROOT / "work/kvasir_1pct_anchors/stage1_feature_knn")
@@ -321,8 +323,17 @@ def main() -> None:
     feature_root = args.output_root / "features"
     feature_root.mkdir(parents=True, exist_ok=True)
     state = build_mode_state(args.mode, records, support, feature_root)
-    routes = freeze_routes(args.mode, args.output_root, records, support, state, args.max_bridge, args.beam_width)
-    print(json.dumps({"mode": args.mode, "routes": len(routes), "max_bridge": args.max_bridge}, indent=2))
+    routes = freeze_routes(
+        args.mode,
+        args.output_root,
+        records,
+        support,
+        state,
+        args.split,
+        args.max_bridge,
+        args.beam_width,
+    )
+    print(json.dumps({"mode": args.mode, "split": args.split, "routes": len(routes), "max_bridge": args.max_bridge}, indent=2))
 
 
 if __name__ == "__main__":

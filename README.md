@@ -212,6 +212,49 @@ modes, the `256` and `512` runs use identical route hashes and identical route
 ordering, so canvas differences come from SAM3 execution, not from KNN selecting
 different paths.
 
+### Candidate-Invariant Propagation-Quality Router
+
+This follow-up keeps SAM3 fully frozen and replaces the older
+candidate-relative weighting rule with an absolute route scorer.  Each route is
+scored independently, so adding low-quality or duplicate candidates does not
+renormalize the quality of existing routes.  The best current setting uses:
+
+- route generators: `anchor_conditioned_target_pooling` and
+  `anchor_conditioned_patch_correspondence`
+- candidate lengths: `b3-b6` only
+- scorer input: route geometry plus propagation-quality features
+- propagation-quality features: mask-area trajectory, empty-mask count,
+  connected components, centroid/box changes, adjacent-frame Dice, SAM score
+  trajectory, and fresh-state anchor cycle consistency
+
+The current best frozen-SAM3 Kvasir 1% test result is:
+
+| selector | candidates | Test Dice | Oracle | Oracle gap |
+|---|---|---:|---:|---:|
+| fixed best route | target pooling `b6` | 0.854627 | - | - |
+| v2 absolute ridge router | target pooling `b0-b7` | 0.854437 | 0.898969 | 0.044531 |
+| propagation-quality router | target pooling `b0-b7` | 0.872938 | 0.898969 | 0.026030 |
+| propagation-quality router | target pooling `b0-b6` | 0.873599 | 0.898969 | 0.025370 |
+| propagation-quality router | target + patch `b0-b6` | 0.873626 | 0.903846 | 0.030220 |
+| propagation-quality router | target + patch `b3-b6` | **0.877299** | 0.896918 | 0.019619 |
+
+Two diagnostic conclusions are important:
+
+- Full `C0-C7` validation training did not solve the oracle gap by itself; the
+  bottleneck was not simply missing long-route training coverage.
+- Propagation-quality features are useful.  For target pooling, adding
+  trajectory/cycle features improves Top-1 Dice from `0.854437` to `0.872938`.
+
+The current main follow-up line is therefore:
+
+```text
+Frozen SAM3
+  -> target-pooling + patch-correspondence route proposals
+  -> keep b3-b6 candidates
+  -> independent propagation-quality route scoring
+  -> Top-1 selected pseudo mask
+```
+
 ### Launch Commands
 
 Generate the Kvasir 1% anchor protocol first if it is missing:
@@ -244,6 +287,33 @@ Per-mode summaries are written to:
 
 ```text
 work/kvasir_1pct_anchors/stage1_feature_knn_b7/<feature_mode>/eval_base_no_ft_b7_forward/route_family_summary.json
+```
+
+Build validation `b0-b7` routes and run forward-only Frozen SAM3 evaluation for
+the absolute-router training split:
+
+```bash
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+export CUDA_VISIBLE_DEVICES=0
+bash scripts/run_stage1_b7_validation_eval_forward.sh
+```
+
+Run propagation-quality feature extraction for the two main route generators:
+
+```bash
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+export CUDA_VISIBLE_DEVICES=0
+bash scripts/run_propagation_quality_main_modes.sh
+```
+
+Summarize the v2 absolute router, the unified-candidate oracle, and the
+propagation-quality router:
+
+```bash
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+python3 scripts/summarize_candidate_invariant_v2.py
+python3 scripts/analyze_propagation_quality_router.py
+python3 scripts/eval_bridge_range_quality_router.py --min-bridge 3 --max-bridge 6
 ```
 
 The earlier weighted fine-tuning summaries are stored under:
