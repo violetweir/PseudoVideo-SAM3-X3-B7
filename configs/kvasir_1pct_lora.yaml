@@ -1,0 +1,67 @@
+# SAM3 LoRA fine-tuning on Kvasir 1% (8 GT anchors).
+# Settings follow MedSAM3's full_lora_config.yaml; adapted batch/epochs for 3090.
+model:
+  name: "facebook/sam3"
+  checkpoint_path: /Data_8TB/lht/models/modelscope/models/facebook--sam3/snapshots/master/sam3.pt
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.1
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "out_proj"
+    - "qkv"
+    - "proj"
+    - "fc1"
+    - "fc2"
+    - "c_fc"
+    - "c_proj"
+    - "linear1"
+    - "linear2"
+  apply_to_vision_encoder: true
+  apply_to_text_encoder: true
+  apply_to_geometry_encoder: true
+  apply_to_detr_encoder: true
+  apply_to_detr_decoder: true
+  apply_to_mask_decoder: true
+
+training:
+  data_dir: /Data_8TB/lht/DG-GroupUNet/experiments/wacv2027/T11_sam3_lowlabel_ft_kvasir_budgets/dataset/KvasirSEG_1pct_seed2026
+  batch_size: 1
+  num_workers: 2
+  learning_rate: 5e-5
+  weight_decay: 0.01
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_epsilon: 1e-8
+  max_grad_norm: 1.0
+  num_epochs: 20
+  warmup_steps: 20
+  lr_scheduler: "cosine"
+  logging_steps: 10
+  eval_steps: 999999
+  save_steps: 999999
+  save_total_limit: 20
+  mixed_precision: "bf16"
+  seed: 42
+  gradient_accumulation_steps: 8
+
+output:
+  output_dir: "work/kvasir_1pct_anchors/lora_experiment/lora_1pct"
+  logging_dir: "logs"
+  save_lora_only: true
+  push_to_hub: false
+  hub_model_id: null
+
+evaluation:
+  metric: "iou"
+  save_predictions: false
+  compute_metrics_during_training: true
+
+hardware:
+  device: "cuda"
+  dataloader_pin_memory: true
+  use_compile: false

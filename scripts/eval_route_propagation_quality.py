@@ -169,6 +169,7 @@ def evaluate(
     output_root: Path,
     canvas: int,
     resume: bool,
+    use_target_gt: bool,
 ) -> list[dict[str, Any]]:
     result_path = output_root / "propagation_quality.jsonl"
     old_rows = read_jsonl(result_path) if resume else []
@@ -178,6 +179,8 @@ def evaluate(
         if row.get("status") == "success"
     }
     pending = [row for row in routes if row["route_id"] not in existing]
+    mask_root = output_root / "forward_masks"
+    mask_root.mkdir(parents=True, exist_ok=True)
     for position, route in enumerate(pending, 1):
         started = time.time()
         forward_paths = [
@@ -191,6 +194,8 @@ def evaluate(
             route["anchor_box_xywh_normalized"],
             canvas,
         )
+        final_mask_path = mask_root / f"{route['route_id']}.png"
+        Image.fromarray(trace["final_mask"].astype(np.uint8) * 255).save(final_mask_path)
         anchor_mask = t21.load_mask(route["anchor_mask_path"], canvas)
         cycle = t21.propagate_return_from_predicted_mask(
             model,
@@ -199,11 +204,15 @@ def evaluate(
             canvas,
         )
         q_cycle = t21.dice(cycle["mask"], anchor_mask)
-        gt = t21.load_mask(route["target_mask_path_evaluation_only"], canvas)
-        gt_metric = t21.metrics(trace["final_mask"], gt)
+        gt_metric = {}
+        if use_target_gt:
+            gt = t21.load_mask(route["target_mask_path_evaluation_only"], canvas)
+            gt_metric = t21.metrics(trace["final_mask"], gt)
         row = {
             **route,
             "status": "success",
+            "forward_mask_path": str(final_mask_path),
+            "forward_mask_sha256": t21.sha256_file(final_mask_path),
             "q_cycle": q_cycle,
             "cycle_success": cycle["success"],
             "cycle_failure_reason": cycle["failure_reason"],
@@ -217,7 +226,8 @@ def evaluate(
         existing[row["route_id"]] = row
         print(
             f"[{position}/{len(pending)}] {route['target_id']} {route['route_type']} "
-            f"dice={gt_metric['dice']:.4f} cycle={q_cycle:.4f}",
+            f"dice={gt_metric['dice']:.4f} cycle={q_cycle:.4f}" if use_target_gt
+            else f"[{position}/{len(pending)}] {route['target_id']} {route['route_type']} cycle={q_cycle:.4f}",
             flush=True,
         )
     final_rows = [existing[row["route_id"]] for row in routes]
@@ -230,9 +240,16 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--mode", required=True)
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--split", choices=("validation", "test"), default="validation")
+    parser.add_argument("--split", choices=("train", "validation", "test"), default="validation")
     parser.add_argument("--canvas", type=int, default=512)
+    parser.add_argument("--no-target-gt", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--tag",
+        type=str,
+        default="",
+        help="Optional suffix for the output dir to isolate checkpoints, e.g. --tag lora_p491_e20.",
+    )
     args = parser.parse_args()
 
     mode_root = args.root / args.mode
@@ -240,7 +257,10 @@ def main() -> None:
         read_jsonl(mode_root / f"{args.split}_pool0_stage1/routes.jsonl"),
         key=route_sort_key,
     )
-    output_root = mode_root / f"propagation_quality_{args.split}"
+    output_root = mode_root / (
+        f"propagation_quality_{args.split}"
+        + (f"_{args.tag}" if args.tag else "")
+    )
     output_root.mkdir(parents=True, exist_ok=True)
     model = build_sam3_video_model(
         checkpoint_path=str(args.checkpoint.resolve()),
@@ -249,15 +269,23 @@ def main() -> None:
         compile=False,
     )
     model.eval()
-    rows = evaluate(model, routes, output_root, args.canvas, args.resume)
+    rows = evaluate(
+        model,
+        routes,
+        output_root,
+        args.canvas,
+        args.resume,
+        not args.no_target_gt,
+    )
     summary = {}
     for bridge_count in range(8):
-        values = [row["gt_dice_evaluation_only"] for row in rows if int(row["bridge_count"]) == bridge_count]
+        values = [row.get("gt_dice_evaluation_only") for row in rows if int(row["bridge_count"]) == bridge_count]
         cycles = [row["q_cycle"] for row in rows if int(row["bridge_count"]) == bridge_count]
-        if values:
+        values = [value for value in values if value is not None]
+        if cycles:
             summary[f"bridge_{bridge_count}"] = {
-                "n": len(values),
-                "dice": float(np.mean(values)),
+                "n": len(cycles),
+                **({"dice": float(np.mean(values))} if values else {}),
                 "q_cycle": float(np.mean(cycles)),
             }
     (output_root / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")

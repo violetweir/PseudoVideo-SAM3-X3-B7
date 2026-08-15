@@ -187,6 +187,10 @@ The main takeaway is that SAM3 fine-tuning is useful on this protocol.  The
 20% fine-tuned checkpoint is the strongest weighted result, while smaller
 budgets are not strictly monotonic.
 
+Note: the budget table uses the older weighted three-family selector.  With
+the newer propagation-quality router below, the 1% fine-tune reaches
+`0.894648` on the same test split.
+
 ### Frozen-feature KNN Stage1
 
 This diagnostic freezes the SAM3 checkpoint to the un-fine-tuned base model and
@@ -253,6 +257,65 @@ Frozen SAM3
   -> keep b3-b6 candidates
   -> independent propagation-quality route scoring
   -> Top-1 selected pseudo mask
+```
+
+The same router transfers directly to fine-tuned SAM3 checkpoints; the 1%
+fine-tuned variant is reported in the next subsection.
+
+### Fine-Tuned Propagation-Quality Router (ft_1pct)
+
+The propagation-quality router is model-agnostic: the same b3-b6 candidate
+pool and the same validation-trained ridge scorer work with a SAM3 checkpoint
+fine-tuned on the 1% GT budget (8 anchors).  The scorer is re-fit on
+`ft_1pct` validation features; no validation/test GT is used for route
+selection or checkpoint choice.
+
+| scheme | Test Dice | Oracle | Oracle gap |
+|---|---:|---:|---:|
+| b3-b6 target+patch (best) | **0.894648** | 0.919805 | 0.025157 |
+| b3-b6 target pooling | 0.886241 | 0.903572 | 0.017331 |
+| b3-b6 patch correspondence | 0.884695 | 0.901863 | 0.017168 |
+| b0-b6 target+patch (reference) | 0.877061 | 0.921800 | 0.044739 |
+| b0-b6 patch correspondence | 0.890865 | 0.907062 | 0.016198 |
+
+Compared with the frozen base model, the 1% fine-tune improves every bridge
+length and both route generators (test split):
+
+| bridge | ft_1pct target | frozen target | ft_1pct patch | frozen patch |
+|---|---:|---:|---:|---:|
+| direct | 0.7708 | 0.7413 | 0.7979 | 0.7578 |
+| b1 | 0.7922 | 0.7602 | 0.8161 | 0.7735 |
+| b2 | 0.8574 | 0.8272 | 0.8578 | 0.8223 |
+| b3 | 0.8522 | 0.8408 | 0.8599 | 0.8328 |
+| b4 | 0.8609 | 0.8413 | 0.8843 | 0.8340 |
+| b5 | 0.8731 | 0.8486 | 0.8658 | 0.8336 |
+| b6 | 0.8643 | 0.8546 | 0.8797 | 0.8421 |
+
+Takeaways:
+
+- `ft_1pct` + b3-b6 propagation-quality router is the current best Kvasir 1%
+  result at `0.894648`, `+0.0173` over the frozen router (`0.877299`).
+- The fine-tuned oracle is `0.919805` vs `0.896918` frozen, so the remaining
+  Top-1 selection gap is still about `0.025`.
+- At `b0-b6`, the patch-correspondence single mode (`0.890865`) beats the
+  two-mode union (`0.877061`); with a fine-tuned model the shorter routes also
+  become useful and the union scorer is easier to confuse.
+
+Outputs:
+
+```text
+work/kvasir_1pct_anchors/stage1_feature_knn_b7_ft1pct/<mode>/propagation_quality_{validation,test}/summary.json
+work/kvasir_1pct_anchors/propagation_quality_router_ft1pct_b3_b6_check/summary.json
+work/kvasir_1pct_anchors/propagation_quality_router_ft1pct_b0_b6_check/summary.json
+work/kvasir_1pct_anchors/summaries/ft1pct_propagation_quality_router.md
+```
+
+Reproduce:
+
+```bash
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+export CUDA_VISIBLE_DEVICES=1
+bash scripts/run_eval_ft1pct_pq_router.sh
 ```
 
 ### Launch Commands

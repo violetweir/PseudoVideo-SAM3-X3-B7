@@ -1,6 +1,10 @@
 # Method Ladder
 
-This project has two entry points:
+Related docs: [Mainline](mainline.md) (S27 X3+B7) and
+[Kvasir 1% Anchor Method](kvasir_1pct_anchor.md) (WACV2027 Kvasir-SEG 1%
+anchor follow-up).
+
+This project has two script entry points:
 
 - `scripts/run_pipeline.py`: the clean final reproduction path for
   `S27 X3 Final+B7`.

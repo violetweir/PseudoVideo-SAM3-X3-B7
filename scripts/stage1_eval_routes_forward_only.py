@@ -10,8 +10,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import torch
 from PIL import Image
 from sam3.model_builder import build_sam3_video_model
+
+from sam3_lora import attach_mask_decoder_lora, load_lora_state_dict
+from sam3_memory_adapter import attach_memory_read_adapter
 
 ROOT = Path("/Data_8TB/lht/PseudoVideo-SAM3-X3-B7")
 T21_PATH = ROOT / "scripts/run_t21_dynamic_pseudovideo.py"
@@ -112,19 +116,55 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def load_routeco_checkpoint(tracker: Any, checkpoint: Path) -> None:
+    payload = torch.load(checkpoint, map_location="cpu", weights_only=False)
+    memory_config = payload.get("memory_adapter_config", {})
+    adapter = attach_memory_read_adapter(
+        tracker, reduction=int(memory_config.get("reduction", 4))
+    )
+    adapter.load_state_dict(payload["memory_adapter_state_dict"], strict=True)
+    adapter.to("cuda").eval()
+    lora_config = payload.get("mask_decoder_lora_config", {})
+    attach_mask_decoder_lora(
+        tracker,
+        rank=int(lora_config.get("rank", 4)),
+        alpha=float(lora_config.get("alpha", 8.0)),
+        dropout=float(lora_config.get("dropout", 0.0)),
+        include_conv1x1=bool(lora_config.get("include_conv1x1", True)),
+    )
+    load_lora_state_dict(tracker, payload["mask_decoder_lora_state_dict"])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--routeco-checkpoint", type=Path, default=None)
     parser.add_argument("--mode", required=True)
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--split", choices=("validation", "test"), default="test")
+    parser.add_argument("--split", choices=("train", "validation", "test"), default="test")
     parser.add_argument("--canvas", type=int, default=512)
+    parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--eval-name",
+        type=str,
+        default="eval_base_no_ft_b7_forward",
+        help="Eval directory name inside each mode root (isolates different checkpoints).",
+    )
     args = parser.parse_args()
 
     mode_root = args.root / args.mode
     routes = sorted(read_jsonl(mode_root / f"{args.split}_pool0_stage1/routes.jsonl"), key=route_sort_key)
-    eval_name = "eval_base_no_ft_b7_forward" if args.split == "test" else f"eval_base_no_ft_b7_forward_{args.split}"
+    if args.limit:
+        routes = routes[: args.limit]
+    if args.routeco_checkpoint:
+        eval_name = (
+            "eval_routeco_official_v1_step400_forward"
+            if args.split == "test"
+            else f"eval_routeco_official_v1_step400_forward_{args.split}"
+        )
+    else:
+        eval_name = args.eval_name if args.split == "test" else f"{args.eval_name}_{args.split}"
     eval_root = mode_root / eval_name
     eval_root.mkdir(parents=True, exist_ok=True)
     model = build_sam3_video_model(
@@ -133,6 +173,8 @@ def main() -> None:
         device="cuda",
         compile=False,
     )
+    if args.routeco_checkpoint:
+        load_routeco_checkpoint(model.tracker, args.routeco_checkpoint)
     model.eval()
     rows = evaluate_forward_only(model, eval_root, routes, args.canvas, args.resume)
     summary = summarize(rows)
