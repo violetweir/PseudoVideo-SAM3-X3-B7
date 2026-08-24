@@ -61,6 +61,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--student-temperature", type=float, default=0.05)
     parser.add_argument("--min-gate", type=float, default=0.15)
     parser.add_argument("--pseudo-warmup-steps", type=int, default=120)
+    parser.add_argument("--no-student-gate-pseudo", action="store_true",
+                        help="do not multiply pseudo loss by the student gate even for consensus samples")
     parser.add_argument("--save-every", type=int, default=100)
     parser.add_argument("--save-step0", action="store_true")
     return parser.parse_args()
@@ -100,6 +102,8 @@ def row_gates(row: dict[str, Any], args: argparse.Namespace) -> dict[str, float]
         "gate_s_to_t": gate_from_variance(
             student_variance, args.student_temperature, args.min_gate
         ),
+        "student_feedback": bool(row.get("pseudo_consensus_path"))
+            or row.get("sample_type") in ("tier_a", "tier_b"),
         "route_uncertainty": float(route_uncertainty or 0.0),
         "route_disagreement": float(route_disagreement),
         "student_variance": float(student_variance or 0.0),
@@ -292,8 +296,13 @@ def main() -> None:
                 anchor_mask,
             )
             ramp = min(1.0, step / max(1, args.pseudo_warmup_steps))
+            pseudo_student_gate = (
+                gates["gate_s_to_t"]
+                if (not args.no_student_gate_pseudo and gates["student_feedback"])
+                else 1.0
+            )
             loss = (
-                args.lambda_pseudo * ramp * gates["gate_t_to_s"] * pseudo_loss
+                args.lambda_pseudo * ramp * gates["gate_t_to_s"] * pseudo_student_gate * pseudo_loss
                 + gates["gate_s_to_t"] * prior_loss
                 + args.lambda_cycle * gates["gate_s_to_t"] * cycle_loss
             )
@@ -312,7 +321,8 @@ def main() -> None:
             "grad_norm": float(grad_norm),
             "seconds": round(time.time() - started, 2),
             "pseudo_loss": float(pseudo_loss.detach()),
-            "pseudo_weight": args.lambda_pseudo * ramp * gates["gate_t_to_s"],
+            "pseudo_weight": args.lambda_pseudo * ramp * gates["gate_t_to_s"] * pseudo_student_gate,
+            "pseudo_student_gate": float(pseudo_student_gate),
             "cycle_loss": float(cycle_loss.detach()),
             "cycle_weight": args.lambda_cycle * gates["gate_s_to_t"],
             "prior_loss": float(prior_loss.detach()),

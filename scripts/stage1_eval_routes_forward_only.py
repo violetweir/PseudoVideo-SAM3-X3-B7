@@ -157,14 +157,7 @@ def main() -> None:
     routes = sorted(read_jsonl(mode_root / f"{args.split}_pool0_stage1/routes.jsonl"), key=route_sort_key)
     if args.limit:
         routes = routes[: args.limit]
-    if args.routeco_checkpoint:
-        eval_name = (
-            "eval_routeco_official_v1_step400_forward"
-            if args.split == "test"
-            else f"eval_routeco_official_v1_step400_forward_{args.split}"
-        )
-    else:
-        eval_name = args.eval_name if args.split == "test" else f"{args.eval_name}_{args.split}"
+    eval_name = args.eval_name if args.split == "test" else f"{args.eval_name}_{args.split}"
     eval_root = mode_root / eval_name
     eval_root.mkdir(parents=True, exist_ok=True)
     model = build_sam3_video_model(

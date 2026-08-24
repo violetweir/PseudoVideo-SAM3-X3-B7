@@ -135,3 +135,50 @@ DINOv3 无关(SAM3-enc 特征 @256,grid 18),beam 32,bridge b0–b6,
   偏移污染,融合权重应保持较小;
 - 256 特征输入 token 数为 18×18=324(SAM3 patch 14),与 DINOv3 ViT-B
   的 16×16=256 不同源,报告统一口径为"输入分辨率 256×256"。
+
+## 6. SAM3-FPN foreground transport KNN(2026-08-20)
+
+### 6.1 设计
+
+前述 SAM3enc 方法仍主要把 SAM3 当作普通图像编码器:只消费 trunk 最后一层,
+且全图均值会把分割所需的前景/背景结构压掉。本轮新增
+`sam3enc_fpn_foreground_transport`,直接使用 SAM3 tracker 传播实际消费的
+三层 FPN(72×72 / 36×36 / 18×18,各 256 维):
+
+1. 每个 GT anchor 在三层 FPN 上分别建立 foreground/background prototype;
+2. 对候选图按 `cos(token,fg)-cos(token,bg)` 选择 top 12.5% 软前景;
+3. 每层拼接软前景 pooled descriptor 与 `fg-bg` contrast descriptor,
+   三层联合后得到 anchor-specific 描述子;
+4. 相邻路径边使用 90% 多尺度前景语义相似度 + 10% 软前景中心/尺度连续性;
+5. KNN 候选排序和 beam path scorer 使用同一个 anchor-specific edge score,
+   不再出现“按全图 KNN 找邻居、按 anchor score 选路径”的目标错位。
+
+特征缓存:
+`features/sam3_base_s256_fpn_transport_features.npz`。评估仍固定 C0_256 的
+`ft_1pct_merged_video.pt`,canvas 256,只改变 KNN 路线。
+
+### 6.2 结果
+
+| split / method | b3 | b4 | b5 | b6 |
+|---|---:|---:|---:|---:|
+| validation DINO patch-correspondence | 0.8610 | 0.8700 | 0.8538 | 0.8683 |
+| validation SAM3-FPN transport | **0.8721** | **0.8788** | **0.8617** | 0.8654 |
+| test DINO patch-correspondence | **0.8845** | 0.8820 | - | - |
+| test SAM3-FPN transport | 0.8777 | **0.8871** | - | - |
+
+- `b4` 是可复现的工作点:相对最强 DINO 对照,validation `+0.00881`,test
+  `+0.00507`;test 逐 target 胜率 64%,中位差 `+0.00221`;
+- `b3` 没有跨 split 保持,test 比 DINO 低 `0.00680`;`b6` 在 validation
+  也回落 `0.00292`,说明该前景 transport 更适合固定中等长度路径;
+- b4 的 paired bootstrap 95% CI 仍较宽:validation
+  `[-0.0139,+0.0307]`,test `[-0.0321,+0.0406]`,尚不能称为统计显著提升;
+- 结论:这是目前 SAM3-base-only 路线中第一个在预先固定的 `b4` 上跨
+  validation/test 都超过 DINO patch-correspondence 的候选,可加入后续 B7
+  候选池;证据尚不足以删除 C0_256 的 DINO 分支。
+
+### 6.3 下一步
+
+当前少数灾难性换路无法被 `path_bottleneck_similarity` 识别(置信度与逐样本
+增益相关系数接近 0)。下一版优先在 FPN KNN top-K 内加入 SAM3-native 的
+局部 mutual token transport / 单步 forward-backward cycle verifier,用传播
+一致性重排候选,而不是继续调全局余弦权重。

@@ -1,0 +1,56 @@
+# Full-module LoRA continuation of the SAM3@256 KNN b0-b6 experiment.
+#
+# Pseudo labels are selected without train GT by the validation-frozen rule:
+# X3 val-best (iteration 28800) + B7, b0-b6, both SAM3-KNN route families,
+# B7 >= 0.94. Training contains 486 pseudo labels plus 8 fixed human anchors.
+
+model:
+  name: "facebook/sam3"
+  checkpoint_path: /Data_8TB/lht/models/modelscope/models/facebook--sam3/snapshots/master/sam3.pt
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.1
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "out_proj"
+    - "qkv"
+    - "proj"
+    - "fc1"
+    - "fc2"
+    - "c_fc"
+    - "c_proj"
+    - "linear1"
+    - "linear2"
+  apply_to_vision_encoder: true
+  apply_to_text_encoder: true
+  apply_to_geometry_encoder: true
+  apply_to_detr_encoder: true
+  apply_to_detr_decoder: true
+  apply_to_mask_decoder: true
+
+training:
+  data_dir: /Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/rerun_c0_256_sam3knn_s256_base/medsam3_lora_b0_b6_e50/data
+  batch_size: 1
+  num_workers: 2
+  learning_rate: 5.0e-5
+  weight_decay: 0.01
+  num_epochs: 50
+  seed: 2026
+
+output:
+  output_dir: work/rerun_c0_256_sam3knn_s256_base/medsam3_lora_b0_b6_e50/lora_weights
+  save_lora_only: true
+
+evaluation:
+  metric: "direct_validation_dice"
+  class_probability_threshold: 0.5
+  mask_probability_threshold: 0.5
+  downstream_selection: "SAM3@256-KNN b0-b6 propagation + frozen X3-best B7"
+
+hardware:
+  device: "cuda"
+  training_resolution: 1008

@@ -34,6 +34,13 @@ def main() -> None:
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument(
+        "--splits",
+        nargs="+",
+        choices=("train", "validation", "test"),
+        default=("train", "validation", "test"),
+        help="Dataset splits to export (default preserves the original behavior).",
+    )
     args = parser.parse_args()
 
     config = argparse.Namespace(
@@ -46,7 +53,7 @@ def main() -> None:
     )
     args.output_root.mkdir(parents=True, exist_ok=True)
 
-    for split in ("train", "validation", "test"):
+    for split in args.splits:
         metadata = read_jsonl(Path(config.data_path) / split / "metadata.jsonl")
         probability_dir = args.output_root / split / "probability"
         binary_dir = args.output_root / split / "binary"

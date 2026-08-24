@@ -35,6 +35,10 @@ MODES = (
     "anchor_conditioned_target_pooling",
     "anchor_conditioned_patch_correspondence",
     "sam3enc_patch_average",
+    "sam3enc_lesion",
+    "sam3enc_global_lesion",
+    "sam3enc_lesion_anchor_global_bridge",
+    "sam3enc_global_anchor_lesion_bridge",
     "sam3enc_pyramid",
     "sam3enc_contrast",
     "sam3enc_pyramid_contrast",
@@ -43,6 +47,7 @@ MODES = (
     "sam3enc_original_mask_joint",
     "sam3enc_anchor_conditioned_target_pooling",
     "sam3enc_anchor_conditioned_patch_correspondence",
+    "sam3enc_fpn_foreground_transport",
 )
 ROUTE_TYPES = {0: "direct", **{idx: f"bridge_{idx}" for idx in range(1, 8)}}
 DINOV3_MODELS = {
@@ -64,11 +69,36 @@ ANCHOR_MODES = (
     "sam3enc_anchor_conditioned_target_pooling",
     "sam3enc_anchor_conditioned_patch_correspondence",
     "sam3enc_imr",
+    "sam3enc_fpn_foreground_transport",
 )
 # IMR 描述子 modes (SAM3 encoder @feature_size, mask-free visual descriptors)
 IMR_VISUAL_MODES = ("sam3enc_pyramid", "sam3enc_contrast", "sam3enc_pyramid_contrast")
 FEATURE_SOURCES = ("dinov3_vits16", "dinov3_vitb16", "sam3_base")
 SAM3_CKPT = "/Data_8TB/lht/models/modelscope/models/facebook--sam3/snapshots/master/sam3.pt"
+# Lesion (mask-foreground) descriptors from round-1 pseudo masks, @1008.
+# Reused by sam3enc_lesion / sam3enc_global_lesion modes (anchor-independent).
+MASK_DESC_NPZ = (
+    ROOT
+    / "work/kvasir_1pct_anchors/stage1_feature_knn_sam3enc_s1008/features/sam3enc_mask_descriptors_s1008.npz"
+)
+
+
+def load_lesion_descriptors(
+    records: list[dict[str, Any]], path: Path = MASK_DESC_NPZ
+) -> np.ndarray:
+    """F_lesion: mean of SAM3-trunk patch tokens inside the round-1 pseudo mask,
+    L2-normalized, aligned to records order (1000 rows)."""
+    if not path.exists():
+        raise SystemExit(f"Missing lesion descriptors: {path} (run extract_sam3_mask_descriptors.py)")
+    data = np.load(path)
+    by_id = {str(record_id): pos for pos, record_id in enumerate(data["ids"].tolist())}
+    rows = []
+    for record in records:
+        pos = by_id.get(record["merged_id"])
+        if pos is None:
+            raise SystemExit(f"Missing lesion descriptor for {record['merged_id']}")
+        rows.append(data["descriptors"][pos])
+    return l2norm(np.asarray(rows, dtype=np.float32))
 
 
 def l2norm(x: np.ndarray, axis: int = -1) -> np.ndarray:
@@ -382,6 +412,160 @@ def extract_sam3_encoder_features(
     np.savez_compressed(feature_path, **payload)
 
 
+def extract_sam3_fpn_transport_features(
+    records: list[dict[str, Any]],
+    support: list[dict[str, Any]],
+    output: Path,
+    feature_size: int = 256,
+) -> None:
+    """Extract anchor-conditioned descriptors from SAM3's tracker FPN.
+
+    Unlike the trunk baselines, this uses the exact three feature levels consumed
+    by SAM3 propagation. Each anchor supplies foreground/background prototypes;
+    their margin selects a soft foreground in every candidate image. The saved
+    descriptor combines foreground appearance and foreground/background contrast.
+    """
+    feature_path = output / f"sam3_base_s{feature_size}_fpn_transport_features.npz"
+    if feature_path.exists():
+        return
+    from sam3.model_builder import build_sam3_video_model
+
+    model = build_sam3_video_model(
+        checkpoint_path=SAM3_CKPT, load_from_HF=False, device="cuda", compile=False
+    )
+    model.eval()
+    trunk = model.detector.backbone.vision_backbone.trunk
+    prepare_sam3_trunk(trunk, feature_size)
+    anchor_ids = [row["merged_id"] for row in support]
+
+    def preprocess(x: torch.Tensor) -> torch.Tensor:
+        return (x - 0.5) / 0.5
+
+    def fpn_levels(x: torch.Tensor) -> list[torch.Tensor]:
+        out = model.detector.backbone.forward_image(x)["sam2_backbone_out"]
+        return [torch.nn.functional.normalize(feat, dim=1) for feat in out["backbone_fpn"]]
+
+    fg_protos: list[list[torch.Tensor]] = [[] for _ in range(3)]
+    bg_protos: list[list[torch.Tensor]] = [[] for _ in range(3)]
+    anchor_desc_rows: list[np.ndarray] = []
+    anchor_centers: list[list[float]] = []
+    anchor_spreads: list[float] = []
+    with torch.no_grad():
+        for anchor in support:
+            x = preprocess(load_rgb_tensor(anchor["image_path"], feature_size)).unsqueeze(0).cuda()
+            levels = fpn_levels(x)
+            desc_parts = []
+            for level_no, feat in enumerate(levels):
+                _, channels, height, width = feat.shape
+                tokens = feat[0].flatten(1).T
+                fg = torch.from_numpy(
+                    load_mask_grid(anchor["frozen_mask_path"], height).reshape(-1)
+                ).to(tokens.device)
+                if not bool(fg.any()):
+                    fg = torch.ones_like(fg)
+                bg = ~fg
+                fg_proto = torch.nn.functional.normalize(tokens[fg].mean(0), dim=0)
+                bg_proto = torch.nn.functional.normalize(
+                    tokens[bg].mean(0) if bool(bg.any()) else tokens.mean(0), dim=0
+                )
+                fg_protos[level_no].append(fg_proto)
+                bg_protos[level_no].append(bg_proto)
+                contrast = torch.nn.functional.normalize(fg_proto - bg_proto, dim=0)
+                desc_parts.extend([fg_proto, contrast])
+            anchor_desc_rows.append(
+                torch.nn.functional.normalize(torch.cat(desc_parts), dim=0).float().cpu().numpy()
+            )
+            mask = load_mask_grid(anchor["frozen_mask_path"], 72)
+            ys, xs = np.where(mask)
+            if len(xs):
+                cx, cy = float(xs.mean() / 71.0), float(ys.mean() / 71.0)
+                spread = float(np.sqrt(xs.var() + ys.var()) / 71.0)
+            else:
+                cx, cy, spread = 0.5, 0.5, 0.5
+            anchor_centers.append([cx, cy])
+            anchor_spreads.append(max(spread, 1e-3))
+
+    fg_proto_t = [torch.stack(rows) for rows in fg_protos]
+    bg_proto_t = [torch.stack(rows) for rows in bg_protos]
+    desc_rows, center_rows, spread_rows = [], [], []
+    batch = 4
+    with torch.no_grad():
+        for start in range(0, len(records), batch):
+            chunk = records[start : start + batch]
+            x = torch.stack(
+                [preprocess(load_rgb_tensor(row["image_path"], feature_size)) for row in chunk]
+            ).cuda()
+            levels = fpn_levels(x)
+            level_descs = []
+            finest_centers = None
+            finest_spreads = None
+            for level_no, feat in enumerate(levels):
+                bsz, channels, height, width = feat.shape
+                tokens = feat.flatten(2).permute(0, 2, 1)
+                fg_sim = torch.einsum("ad,bpd->abp", fg_proto_t[level_no], tokens)
+                bg_sim = torch.einsum("ad,bpd->abp", bg_proto_t[level_no], tokens)
+                margin = fg_sim - bg_sim
+                top_count = max(4, int(round(height * width * 0.125)))
+                top_values, top_indices = torch.topk(margin, k=top_count, dim=2)
+                expanded = tokens.unsqueeze(0).expand(len(support), -1, -1, -1)
+                selected = torch.gather(
+                    expanded,
+                    2,
+                    top_indices.unsqueeze(-1).expand(-1, -1, -1, channels),
+                )
+                weights = torch.softmax(top_values * 8.0, dim=2)
+                fg_pool = torch.nn.functional.normalize(
+                    (selected * weights.unsqueeze(-1)).sum(dim=2), dim=-1
+                )
+
+                low_values, low_indices = torch.topk(-margin, k=top_count, dim=2)
+                selected_bg = torch.gather(
+                    expanded,
+                    2,
+                    low_indices.unsqueeze(-1).expand(-1, -1, -1, channels),
+                )
+                bg_weights = torch.softmax(low_values * 4.0, dim=2)
+                bg_pool = torch.nn.functional.normalize(
+                    (selected_bg * bg_weights.unsqueeze(-1)).sum(dim=2), dim=-1
+                )
+                contrast = torch.nn.functional.normalize(fg_pool - bg_pool, dim=-1)
+                level_descs.extend([fg_pool, contrast])
+
+                if level_no == 0:
+                    yy, xx = torch.meshgrid(
+                        torch.linspace(0.0, 1.0, height, device=feat.device),
+                        torch.linspace(0.0, 1.0, width, device=feat.device),
+                        indexing="ij",
+                    )
+                    coords = torch.stack([xx.flatten(), yy.flatten()], dim=1)
+                    selected_coords = coords[top_indices]
+                    centers = (selected_coords * weights.unsqueeze(-1)).sum(dim=2)
+                    variance = (
+                        (selected_coords - centers.unsqueeze(2)).square().sum(dim=-1) * weights
+                    ).sum(dim=2)
+                    finest_centers = centers
+                    finest_spreads = variance.clamp_min(1e-6).sqrt()
+
+            descriptor = torch.nn.functional.normalize(torch.cat(level_descs, dim=-1), dim=-1)
+            desc_rows.append(descriptor.float().cpu().numpy())
+            center_rows.append(finest_centers.float().cpu().numpy())
+            spread_rows.append(finest_spreads.float().cpu().numpy())
+            print(f"sam3 fpn transport {min(start + batch, len(records))}/{len(records)}", flush=True)
+
+    np.savez_compressed(
+        feature_path,
+        descriptors=np.concatenate(desc_rows, axis=1).astype(np.float32),
+        centers=np.concatenate(center_rows, axis=1).astype(np.float32),
+        spreads=np.concatenate(spread_rows, axis=1).astype(np.float32),
+        anchor_descriptors=np.asarray(anchor_desc_rows, dtype=np.float32),
+        anchor_centers=np.asarray(anchor_centers, dtype=np.float32),
+        anchor_spreads=np.asarray(anchor_spreads, dtype=np.float32),
+        anchor_ids=np.asarray(anchor_ids),
+        feature_source="sam3_base_fpn_transport",
+        feature_size=feature_size,
+    )
+
+
 def extract_encoder_features(
     records: list[dict[str, Any]],
     support: list[dict[str, Any]],
@@ -419,11 +603,42 @@ def build_mode_state(
     text_blend: float = 0.0,
     qwen_desc_root: Path = ROOT / "work/kvasir_1pct_anchors/train_pseudo_masks_round1",
     mask_visual_fraction: float = 0.0,
+    lesion_desc_path: Path = MASK_DESC_NPZ,
 ) -> dict[str, Any]:
     if mode == "t18_corrected":
         desc = t18_descriptors(records, feature_root)
         return {"mode": mode, "desc": desc, "sim": desc @ desc.T}
     if mode.startswith("sam3enc"):
+        if mode == "sam3enc_fpn_foreground_transport":
+            extract_sam3_fpn_transport_features(records, support, feature_root, feature_size)
+            data = np.load(feature_root / f"sam3_base_s{feature_size}_fpn_transport_features.npz")
+            descriptors = data["descriptors"]  # (A, N, D)
+            semantic = np.einsum("and,amd->anm", descriptors, descriptors).astype(np.float32)
+            centers = data["centers"]
+            spreads = data["spreads"]
+            center_delta = centers[:, :, None, :] - centers[:, None, :, :]
+            center_score = np.exp(-np.square(center_delta).sum(axis=-1) / (2.0 * 0.25**2))
+            spread_delta = np.abs(
+                np.log(np.maximum(spreads[:, :, None], 1e-4))
+                - np.log(np.maximum(spreads[:, None, :], 1e-4))
+            )
+            geometry = center_score * np.exp(-spread_delta)
+            edge_sim = (0.9 * semantic + 0.1 * geometry).astype(np.float32)
+            cond_scores = np.einsum(
+                "ad,and->an", data["anchor_descriptors"], descriptors
+            ).astype(np.float32)
+            return {
+                "mode": mode,
+                "sim": semantic.mean(axis=0),
+                "knn_sim": edge_sim,
+                "edge_sim": edge_sim,
+                "knn_feature": "pooled",
+                "cond_scores": cond_scores,
+                "id_to_anchor": {
+                    anchor_id: i for i, anchor_id in enumerate(data["anchor_ids"].tolist())
+                },
+                "text_blend": 0.0,
+            }
         if mode in ("sam3enc_mask_visual", "sam3enc_original_mask_joint"):
             mask_path = feature_root / "sam3enc_mask_descriptors_s1008.npz"
             if not mask_path.exists():
@@ -501,6 +716,30 @@ def build_mode_state(
         patch_mean = data["patch_mean"]
         if mode == "sam3enc_patch_average":
             return {"mode": mode, "desc": patch_mean, "sim": patch_mean @ patch_mean.T}
+        if mode in (
+            "sam3enc_lesion",
+            "sam3enc_global_lesion",
+            "sam3enc_lesion_anchor_global_bridge",
+            "sam3enc_global_anchor_lesion_bridge",
+        ):
+            lesion = load_lesion_descriptors(records, lesion_desc_path)
+            if mode == "sam3enc_lesion":
+                return {"mode": mode, "desc": lesion, "sim": lesion @ lesion.T}
+            if mode == "sam3enc_global_lesion":
+                desc = l2norm(np.concatenate([patch_mean, lesion], axis=1).astype(np.float32))
+                return {"mode": mode, "desc": desc, "sim": desc @ desc.T}
+            # E1 anchor/bridge decoupling: anchor edge uses anchor_desc, bridge edges use bridge_desc
+            if mode == "sam3enc_lesion_anchor_global_bridge":
+                anchor_desc, bridge_desc = lesion, patch_mean
+            else:
+                anchor_desc, bridge_desc = patch_mean, lesion
+            return {
+                "mode": mode,
+                "desc": bridge_desc,
+                "sim": bridge_desc @ bridge_desc.T,
+                "anchor_desc": anchor_desc,
+                "anchor_sim": anchor_desc @ anchor_desc.T,
+            }
         cond_scores = data["cond_correspondence" if mode.endswith("patch_correspondence") else "cond_target"]
         if knn_feature == "patch_mean":
             knn_sim = patch_mean @ patch_mean.T
@@ -579,7 +818,11 @@ def route_score(state: dict[str, Any], anchor_id: str, path: list[int], target_i
         prev = None
         for node in nodes:
             if prev is not None:
-                base = float(state["sim"][prev, node])
+                if "edge_sim" in state:
+                    anchor_idx = state["id_to_anchor"][anchor_id]
+                    base = float(state["edge_sim"][anchor_idx, prev, node])
+                else:
+                    base = float(state["sim"][prev, node])
                 if state.get("text_blend", 0.0) > 0.0 and "text_sim" in state:
                     blend = float(state["text_blend"])
                     text = float(state["text_sim"][prev, node])
@@ -591,15 +834,25 @@ def route_score(state: dict[str, Any], anchor_id: str, path: list[int], target_i
     else:
         anchor_idx = state["id_to_index"][anchor_id]
         nodes2 = [anchor_idx, *path, target_idx]
+        anchor_sim = state.get("anchor_sim")
         if state.get("text_blend", 0.0) > 0.0 and "text_sim" in state:
             blend = float(state["text_blend"])
-            values = [
-                (1.0 - blend) * float(state["sim"][nodes2[i], nodes2[i + 1]])
-                + blend * float(state["text_sim"][nodes2[i], nodes2[i + 1]])
-                for i in range(len(nodes2) - 1)
-            ]
+            values = []
+            for i in range(len(nodes2) - 1):
+                base = (
+                    float(anchor_sim[nodes2[i], nodes2[i + 1]])
+                    if anchor_sim is not None and i == 0
+                    else float(state["sim"][nodes2[i], nodes2[i + 1]])
+                )
+                text = float(state["text_sim"][nodes2[i], nodes2[i + 1]])
+                values.append((1.0 - blend) * base + blend * text)
         else:
-            values = [float(state["sim"][nodes2[i], nodes2[i + 1]]) for i in range(len(nodes2) - 1)]
+            values = []
+            for i in range(len(nodes2) - 1):
+                if anchor_sim is not None and i == 0:
+                    values.append(float(anchor_sim[nodes2[0], nodes2[1]]))
+                else:
+                    values.append(float(state["sim"][nodes2[i], nodes2[i + 1]]))
     return min(values), float(np.mean(values))
 
 
@@ -821,10 +1074,23 @@ def main() -> None:
         default=ROOT / "work/kvasir_1pct_anchors/protocol",
         help="Directory containing merged_manifest.jsonl and support_manifest.jsonl.",
     )
+    parser.add_argument(
+        "--support-manifest",
+        type=Path,
+        default=None,
+        help="Override the support (anchor) manifest. Defaults to {--protocol-root}/support_manifest.jsonl.",
+    )
+    parser.add_argument(
+        "--lesion-desc-npz",
+        type=Path,
+        default=MASK_DESC_NPZ,
+        help="Lesion (mask-foreground) descriptor npz for sam3enc_lesion / _global_lesion / ablation modes.",
+    )
     args = parser.parse_args()
     protocol = args.protocol_root
     records = read_jsonl(protocol / "merged_manifest.jsonl")
-    support = read_jsonl(protocol / "support_manifest.jsonl")
+    support_path = args.support_manifest or protocol / "support_manifest.jsonl"
+    support = read_jsonl(support_path)
     feature_root = args.output_root / "features"
     feature_root.mkdir(parents=True, exist_ok=True)
     mode_key = args.mode
@@ -835,6 +1101,9 @@ def main() -> None:
         raise SystemExit(f"--knn-feature only applies to anchor-conditioned modes, got mode={args.mode}")
     if args.mode == "sam3enc_imr" and args.text_blend > 0.0:
         mode_key = f"{mode_key}__tb{int(round(args.text_blend * 100)):03d}"
+    if args.mode in ("sam3enc_lesion", "sam3enc_global_lesion") and args.lesion_desc_npz != MASK_DESC_NPZ:
+        tag = args.lesion_desc_npz.stem.replace("sam3enc_", "").replace("_s1008", "").replace("_descriptors", "")
+        mode_key = f"{mode_key}__{tag}"
     state = build_mode_state(
         args.mode,
         records,
@@ -846,6 +1115,7 @@ def main() -> None:
         args.text_blend,
         args.qwen_desc_root,
         args.mask_visual_fraction,
+        args.lesion_desc_npz,
     )
     routes = freeze_routes(
         mode_key,
@@ -866,7 +1136,13 @@ def main() -> None:
         "dinov3_model": args.dinov3_model,
         "feature_source": args.feature_source or f"dinov3_{args.dinov3_model}",
         "feature_size": args.feature_size,
-        "knn_feature": "fused" if args.mode == "sam3enc_imr" else args.knn_feature,
+        "knn_feature": (
+            "fused"
+            if args.mode == "sam3enc_imr"
+            else "fpn_foreground_transport"
+            if args.mode == "sam3enc_fpn_foreground_transport"
+            else args.knn_feature
+        ),
         "text_blend": args.text_blend,
         "beam_width": args.beam_width,
         "min_bridge": args.min_bridge,
