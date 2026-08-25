@@ -94,6 +94,7 @@ def main() -> None:
     shape = (args.canvas, args.canvas)
     selected_all: list[dict] = []
     all_candidates: list[dict] = []
+    oracle_by_target: dict[str, float] = {}
     missing_predictions: list[str] = []
 
     for target_id, rows in sorted(quality.items()):
@@ -103,6 +104,13 @@ def main() -> None:
             continue
         student = load_binary(prediction["student_binary_mask"], shape)
         masks = [load_binary(row["forward_mask_path"], shape) for row in rows]
+        available_gt = [
+            float(row["gt_dice_evaluation_only"])
+            for row in rows
+            if "gt_dice_evaluation_only" in row
+        ]
+        if available_gt:
+            oracle_by_target[target_id] = max(available_gt)
 
         for index, row in enumerate(rows):
             peers = [other for j, other in enumerate(masks) if j != index]
@@ -172,6 +180,13 @@ def main() -> None:
 
     b7_values = np.asarray([row["b7"] for row in selected_all], dtype=np.float64)
     selected_gt = [row["gt_dice_evaluation_only"] for row in selected if "gt_dice_evaluation_only" in row]
+    selected_oracle = [
+        oracle_by_target[row["target_id"]]
+        for row in selected
+        if row["target_id"] in oracle_by_target
+    ]
+    selected_gt_mean = float(np.mean(selected_gt)) if selected_gt else None
+    oracle_mean = float(np.mean(selected_oracle)) if selected_oracle else None
     summary = {
         "split": args.split,
         "modes": args.modes,
@@ -187,8 +202,12 @@ def main() -> None:
             str(q): float(np.quantile(b7_values, q))
             for q in (0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
         } if len(b7_values) else {},
-        "selected_gt_dice_evaluation_only": (
-            float(np.mean(selected_gt)) if selected_gt else None
+        "selected_gt_dice_evaluation_only": selected_gt_mean,
+        "oracle_gt_dice_evaluation_only": oracle_mean,
+        "oracle_gap_evaluation_only": (
+            oracle_mean - selected_gt_mean
+            if oracle_mean is not None and selected_gt_mean is not None
+            else None
         ),
     }
     summary_path = args.summary or args.output.with_suffix(".summary.json")
