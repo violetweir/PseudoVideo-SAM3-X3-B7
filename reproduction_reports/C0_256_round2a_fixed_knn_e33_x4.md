@@ -633,14 +633,165 @@ scripts/supervise_c0_256_round2a_pipeline.sh
 3. 在约 0.95 的 validation 伪标签质量水平上，e33 的 coverage 达 56%，base 为 54%。
 4. 新 teacher 最终生成 524 个 train pseudo labels，比上一轮 base teacher 的 486 个多 38 个。
 5. 使用同架构、同 seed、同训练 schedule 和同三流 batch 配方，X4 best validation/test 均高于 X3 best。
+6. e33+X3-best+B7 test 为 0.906380，e33+X4-best+B7 test 为 0.905375，均高于 base+X3+B7 的 0.895432。
 
 不能据此支持：
 
 1. “所有 checkpoint 都更好”：X4 final Test Dice 低于 X3 final。
 2. “所有目标大小都更好”：medium test target 出现退化。
 3. “KNN graph 更新带来收益”：本实验根本没有更新 graph。
-4. “X4+B7 已经取得某个最终分数”：本实验只完成 X3/X4 student comparison，没有把 X4 prediction 再接回 B7 进行新一轮 final selection。
+4. “X4 的单图提升必然带来 B7 提升”：X4+B7 test 0.905375 略低于 X3+B7 test 0.906380。
 
 最准确的一句话结论：
 
-> 固定 KNN topology 后，把 propagation teacher 从 SAM3-base 换成 SAM3-e33，可以通过重校准 B7 伪标签反哺下一代学生，使 X4 的 validation-selected Test Dice 从 0.853920 提升到 0.860007。
+> 固定 KNN topology 后，SAM3-e33 teacher 可以把 X4 单图 student Test Dice 从 0.853920 提升到 0.860007；但在相同 e33 candidates 上，B7 validation-selected 最优 selector 仍为 X3-best，最终 B7 Test Dice 0.906380，X4-best+B7 为 0.905375。
+
+---
+
+## 12. Round-2A 最终闭环：e33 + X3/X4 + B7
+
+> 完成时间：2026-08-25 12:12:50（Asia/Shanghai）。本阶段结束于 B7，不启动下一轮 SAM3 微调。
+
+### 12.1 控制变量与 checkpoint 选择
+
+本阶段的问题是：同一批 e33 propagation candidates 不变，只替换参与 `q_model` 的 student prediction，X4 是否能提高 B7 最终选路结果？
+
+- KNN topology 固定为第一轮 `SAM3-base@256` 生成的 topology，不重新构图。
+- propagation checkpoint 固定为上一轮 Direct validation-best 的 SAM3-e33。
+- 同时保留 `sam3enc_anchor_conditioned_target_pooling` 与 `sam3enc_anchor_conditioned_patch_correspondence`。
+- 每个 target 同时比较 b0-b6，共 7 个 bridge；两模式最多提供 14 条候选。
+- validation/test 均使用全部 100 个 target；评估时 `--min-b7 0`，不筛掉难例。
+- `q_return`、`q_multi` 和 propagation masks 对所有 selector 完全相同；唯一变化是 student prediction，从而变化的是 `q_model` 以及最终 B7 排序。
+- `X3_best` 和 `X4_best` 分别来自各自 student validation-best checkpoint；`X4_final` 仅用于诊断，不能根据 test 反选为正式 checkpoint。
+- `b7_mean` 是 B7 内部置信分数的平均值，不是分割 Dice；以下只用 `selected_gt_dice_evaluation_only` 报告真实 Dice。
+
+### 12.2 B7 validation/test 完整结果
+
+| propagation | student selector | Validation Dice | Test Dice | Val oracle gap | Test oracle gap | 用途 |
+|---|---|---:|---:|---:|---:|---|
+| SAM3-e33 | X3-best | **0.8838539036343016** | **0.9063803067687748** | 0.0212681391592575 | 0.0138256213496096 | 同 candidates 的历史 student 对照；B7 validation 最优 |
+| SAM3-e33 | X4-best | 0.8800700315716979 | 0.9053750856794797 | 0.0250520112218612 | 0.0148308424389048 | Round-2 新 student 的正式 checkpoint |
+| SAM3-e33 | X4-final | 0.8804670161809023 | 0.9053849114608847 | 0.0246550266126568 | 0.0148210166574997 | 仅诊断，不参与模型选择 |
+
+同一 e33 candidate pool 的 oracle 对三种 selector 一致：
+
+```text
+validation oracle Dice = 0.9051220427935591
+test oracle Dice       = 0.9202059281183844
+```
+
+因此 oracle gap 的差异完全来自 B7 选路，而不是候选本身变化。`X4_best - X3_best` 为：
+
+```text
+validation: -0.0037838720626037
+test:       -0.0010052210892951
+```
+
+### 12.3 与未微调 SAM3-base 教师对照
+
+| KNN topology | propagation teacher | student selector | B7 Test Dice | 相对 base teacher | Test oracle Dice | Test oracle gap |
+|---|---|---|---:|---:|---:|---:|
+| 固定 SAM3-base@256 | SAM3-base | X3-best | 0.8954317676013283 | baseline | 0.9214706098083678 | 0.0260388422070396 |
+| 固定 SAM3-base@256 | SAM3-e33 | X3-best | **0.9063803067687748** | **+0.0109485391674465** | 0.9202059281183844 | 0.0138256213496096 |
+| 固定 SAM3-base@256 | SAM3-e33 | X4-best | 0.9053750856794797 | +0.0099433180781514 | 0.9202059281183844 | 0.0148308424389048 |
+
+e33 的 candidate oracle 略低于 base，但最终 selected Dice 更高，因为 e33+X3 的 selector-to-oracle gap 从 0.026039 缩小到 0.013826。故本轮主要收益不是 oracle 上界提高，而是实际候选排序/选择更有效。
+
+### 12.4 为什么 X4 单图更强，但 X4+B7 略差
+
+student 单图测试结果：
+
+```text
+X3-best student direct Test Dice = 0.8539203507540273
+X4-best student direct Test Dice = 0.8600071077128872
+X4 - X3                         = +0.0060867569588600
+```
+
+但 B7 使用 student mask 去衡量它与 e33 propagation candidate 的一致性。单图 Dice 提高，不保证这种一致性分数对候选优劣的排序也同步提高。
+
+- validation：100 个 target 中 64 个选中同一路线，36 个更换；其中 X4 改善 15 个、退化 21 个。
+- test：100 个 target 中 56 个选中同一路线，44 个更换；其中 X4 改善 21 个、退化 23 个。
+- 仅看 test 中改选的 44 个 target，X3 所选 mask 平均 Dice 为 0.927092，X4 所选为 0.924808。
+
+| Test selected bridge | X3-best | X4-best |
+|---|---:|---:|
+| b0 | 13 | 10 |
+| b1 | 5 | 7 |
+| b2 | 9 | 9 |
+| b3 | 12 | 16 |
+| b4 | 17 | 12 |
+| b5 | 21 | 24 |
+| b6 | 23 | 22 |
+
+两模式选择数量分别为：X3-best 的 patch-correspondence/target-pooling = 33/67；X4-best = 34/66。
+
+结论：本轮证明了“更强 teacher 能反哺 student”，但没有证明“更强 student 一定反哺 B7 selector”。若依据 B7 validation 选择最终方案，应选择 `e33 + X3-best + B7`；若报告 Round-2 新 student 完整闭环，则报告 `e33 + X4-best + B7`。
+
+### 12.5 实验指令与复现
+
+从项目根目录执行完整闭环；脚本会在 GPU0/GPU1 分别导出 X4-best/X4-final，然后依次评估 X3-best、X4-best 和 X4-final 的 validation/test：
+
+```bash
+cd /Data_8TB/lht/PseudoVideo-SAM3-X3-B7
+bash scripts/run_c0_256_round2_x4_b7_closeout.sh
+```
+
+导出单个 X4-best checkpoint 的等价命令：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/violet/anaconda3/envs/mkunet_mamba/bin/python \
+  scripts/export_t25_student_predictions.py \
+  --run-dir work/rerun_c0_256_round2a_fixed_knn_e33/students/X4 \
+  --checkpoint work/rerun_c0_256_round2a_fixed_knn_e33/students/X4/student_best.pth \
+  --output-root work/rerun_c0_256_round2a_fixed_knn_e33/predictions/X4_best \
+  --splits train validation test
+```
+
+手动重算 X4-best 的 test B7：
+
+```bash
+/home/violet/anaconda3/envs/sam3/bin/python \
+  scripts/build_c0_256_b7_lora_manifest.py \
+  --quality-root work/rerun_c0_256_round2a_fixed_knn_e33/quality_root \
+  --student-predictions work/rerun_c0_256_round2a_fixed_knn_e33/predictions/X4_best/student_predictions_test.jsonl \
+  --split test \
+  --modes sam3enc_anchor_conditioned_target_pooling sam3enc_anchor_conditioned_patch_correspondence \
+  --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 \
+  --output work/rerun_c0_256_round2a_fixed_knn_e33/x4_b7_closeout/X4_best_test.jsonl \
+  --summary work/rerun_c0_256_round2a_fixed_knn_e33/x4_b7_closeout/X4_best_test.summary.json
+```
+
+汇总六组结果：
+
+```bash
+/home/violet/anaconda3/envs/sam3/bin/python \
+  scripts/summarize_c0_256_round2_b7_closeout.py \
+  --root work/rerun_c0_256_round2a_fixed_knn_e33/x4_b7_closeout \
+  --output work/rerun_c0_256_round2a_fixed_knn_e33/x4_b7_closeout/x3_x4_e33_b7_comparison.json
+```
+
+### 12.6 产物索引与停止边界
+
+```text
+work/rerun_c0_256_round2a_fixed_knn_e33/
+├── predictions/X4_best/
+├── predictions/X4_final/
+├── x4_b7_closeout/
+│   ├── X3_best_validation.jsonl
+│   ├── X3_best_validation.summary.json
+│   ├── X3_best_test.jsonl
+│   ├── X3_best_test.summary.json
+│   ├── X4_best_validation.jsonl
+│   ├── X4_best_validation.summary.json
+│   ├── X4_best_test.jsonl
+│   ├── X4_best_test.summary.json
+│   ├── X4_final_validation.jsonl
+│   ├── X4_final_validation.summary.json
+│   ├── X4_final_test.jsonl
+│   ├── X4_final_test.summary.json
+│   └── x3_x4_e33_b7_comparison.json
+├── x4_b7_closeout.log
+└── X4_B7_COMPLETE
+```
+
+本轮到此结束：**不构建新一轮 SAM3 训练数据集，不启动新的 SAM3/LoRA 训练**。
