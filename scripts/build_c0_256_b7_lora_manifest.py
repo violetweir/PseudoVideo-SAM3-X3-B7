@@ -54,10 +54,23 @@ def main() -> None:
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument(
+        "--all-candidates-output",
+        type=Path,
+        help="Optional JSONL audit containing every scored route candidate.",
+    )
     parser.add_argument("--min-bridge", type=int, default=3)
     parser.add_argument("--max-bridge", type=int, default=6)
     parser.add_argument("--min-b7", type=float, default=0.0)
     parser.add_argument("--canvas", type=int, default=512)
+    parser.add_argument(
+        "--sample-type",
+        default="c0_256_base_x3_best_b7",
+        help=(
+            "Manifest sample_type. Keep the historical default for LoRA data; "
+            "use 'original' when the selected hard masks train an S27 student."
+        ),
+    )
     args = parser.parse_args()
 
     quality: dict[str, list[dict]] = defaultdict(list)
@@ -80,6 +93,7 @@ def main() -> None:
     }
     shape = (args.canvas, args.canvas)
     selected_all: list[dict] = []
+    all_candidates: list[dict] = []
     missing_predictions: list[str] = []
 
     for target_id, rows in sorted(quality.items()):
@@ -104,6 +118,8 @@ def main() -> None:
             row["q_multi"] = q_multi
             row["q_model"] = q_model
             row["b7"] = b7
+            if args.all_candidates_output is not None:
+                all_candidates.append(dict(row))
 
         chosen = max(
             rows,
@@ -118,7 +134,7 @@ def main() -> None:
             "target_id": target_id,
             "target_image_path": chosen["target_image_path"],
             "pseudo_mask_path": chosen["forward_mask_path"],
-            "sample_type": "c0_256_base_x3_best_b7",
+            "sample_type": args.sample_type,
             "split": args.split,
             "route_id": chosen["route_id"],
             "route_mode": chosen["route_mode"],
@@ -127,6 +143,10 @@ def main() -> None:
             "q_multi": chosen["q_multi"],
             "q_model": chosen["q_model"],
             "b7": chosen["b7"],
+            # S27 Student-X4 consumes hard pseudo masks through its
+            # ``original`` stream and expects an explicit per-image weight.
+            # LoRA dataset preparation safely ignores this extra audit field.
+            "explicit_quality_weight": chosen["b7"],
             "student_checkpoint": prediction.get("checkpoint"),
         }
         # Evaluation-only fields are useful for validation calibration and
@@ -143,6 +163,12 @@ def main() -> None:
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in selected),
         encoding="utf-8",
     )
+    if args.all_candidates_output is not None:
+        args.all_candidates_output.parent.mkdir(parents=True, exist_ok=True)
+        args.all_candidates_output.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in all_candidates),
+            encoding="utf-8",
+        )
 
     b7_values = np.asarray([row["b7"] for row in selected_all], dtype=np.float64)
     selected_gt = [row["gt_dice_evaluation_only"] for row in selected if "gt_dice_evaluation_only" in row]
