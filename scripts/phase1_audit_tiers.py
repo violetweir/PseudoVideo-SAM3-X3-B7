@@ -94,6 +94,17 @@ def safe_name(target_id: str) -> str:
     return target_id.replace("::", "__").replace("/", "_")
 
 
+def id_tokens(path_or_id: str) -> set[str]:
+    path = Path(path_or_id)
+    stem = path.stem
+    return {
+        path_or_id,
+        stem,
+        stem.replace("__", "::"),
+        stem.split("__")[-1],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--train-metadata", type=Path, required=True)
@@ -111,22 +122,29 @@ def main() -> None:
     if len(args.predictions) != len(args.predictions_name):
         raise RuntimeError("--predictions and --predictions-name must match")
 
-    labeled = {
-        str(Path(line.strip()).resolve())
-        for line in args.labeled_list.read_text().splitlines()
-        if line.strip()
-    }
+    labeled_count = 0
+    labeled_paths = set()
+    labeled_ids = set()
+    for line in args.labeled_list.read_text().splitlines():
+        value = line.strip()
+        if not value:
+            continue
+        labeled_count += 1
+        labeled_paths.add(str(Path(value).resolve()))
+        labeled_ids.update(id_tokens(value))
     original_ids = {row["target_id"] for row in read_jsonl(args.original_manifest)}
     metadata = read_jsonl(args.train_metadata)
     remaining = [
         row
         for row in metadata
         if row["merged_id"] not in original_ids
-        and str(Path(row["file_name"]).resolve()) not in labeled
+        and row["merged_id"] not in labeled_ids
+        and not (id_tokens(row["file_name"]) & labeled_ids)
+        and str(Path(row["file_name"]).resolve()) not in labeled_paths
     ]
     remaining_ids = {row["merged_id"] for row in remaining}
     print(
-        f"train={len(metadata)} labeled={len(labeled)} original={len(original_ids)} "
+        f"train={len(metadata)} labeled={labeled_count} original={len(original_ids)} "
         f"remaining={len(remaining)}",
         flush=True,
     )

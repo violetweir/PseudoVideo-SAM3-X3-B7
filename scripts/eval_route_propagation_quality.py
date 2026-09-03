@@ -170,6 +170,7 @@ def evaluate(
     canvas: int,
     resume: bool,
     use_target_gt: bool,
+    no_cycle: bool = False,
 ) -> list[dict[str, Any]]:
     result_path = output_root / "propagation_quality.jsonl"
     old_rows = read_jsonl(result_path) if resume else []
@@ -196,14 +197,23 @@ def evaluate(
         )
         final_mask_path = mask_root / f"{route['route_id']}.png"
         Image.fromarray(trace["final_mask"].astype(np.uint8) * 255).save(final_mask_path)
-        anchor_mask = t21.load_mask(route["anchor_mask_path"], canvas)
-        cycle = t21.propagate_return_from_predicted_mask(
-            model,
-            forward_paths,
-            trace["final_mask"],
-            canvas,
-        )
-        q_cycle = t21.dice(cycle["mask"], anchor_mask)
+        if no_cycle:
+            cycle = {
+                "success": None,
+                "failure_reason": "skipped_round3_forward_only",
+                "candidate_count": None,
+                "sam_score": None,
+            }
+            q_cycle = None
+        else:
+            anchor_mask = t21.load_mask(route["anchor_mask_path"], canvas)
+            cycle = t21.propagate_return_from_predicted_mask(
+                model,
+                forward_paths,
+                trace["final_mask"],
+                canvas,
+            )
+            q_cycle = t21.dice(cycle["mask"], anchor_mask)
         gt_metric = {}
         if use_target_gt:
             gt = t21.load_mask(route["target_mask_path_evaluation_only"], canvas)
@@ -226,8 +236,8 @@ def evaluate(
         existing[row["route_id"]] = row
         print(
             f"[{position}/{len(pending)}] {route['target_id']} {route['route_type']} "
-            f"dice={gt_metric['dice']:.4f} cycle={q_cycle:.4f}" if use_target_gt
-            else f"[{position}/{len(pending)}] {route['target_id']} {route['route_type']} cycle={q_cycle:.4f}",
+            f"dice={gt_metric['dice']:.4f} cycle={q_cycle if q_cycle is not None else 'skipped'}" if use_target_gt
+            else f"[{position}/{len(pending)}] {route['target_id']} {route['route_type']} cycle={q_cycle if q_cycle is not None else 'skipped'}",
             flush=True,
         )
     final_rows = [existing[row["route_id"]] for row in routes]
@@ -244,6 +254,8 @@ def main() -> None:
     parser.add_argument("--canvas", type=int, default=512)
     parser.add_argument("--no-target-gt", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--no-cycle", action="store_true")
+    parser.add_argument("--tracker-checkpoint", type=Path)
     parser.add_argument(
         "--tag",
         type=str,
@@ -268,6 +280,9 @@ def main() -> None:
         device="cuda",
         compile=False,
     )
+    if args.tracker_checkpoint is not None:
+        tracker_checkpoint = torch.load(args.tracker_checkpoint, map_location="cpu", weights_only=False)
+        model.tracker.load_state_dict(tracker_checkpoint.get("tracker_state", tracker_checkpoint), strict=True)
     model.eval()
     rows = evaluate(
         model,
@@ -276,17 +291,19 @@ def main() -> None:
         args.canvas,
         args.resume,
         not args.no_target_gt,
+        args.no_cycle,
     )
     summary = {}
     for bridge_count in range(8):
         values = [row.get("gt_dice_evaluation_only") for row in rows if int(row["bridge_count"]) == bridge_count]
-        cycles = [row["q_cycle"] for row in rows if int(row["bridge_count"]) == bridge_count]
+        cycles = [row.get("q_cycle") for row in rows if int(row["bridge_count"]) == bridge_count]
+        cycles = [value for value in cycles if value is not None]
         values = [value for value in values if value is not None]
-        if cycles:
+        if values or cycles:
             summary[f"bridge_{bridge_count}"] = {
-                "n": len(cycles),
+                "n": len(values) if values else len(cycles),
                 **({"dice": float(np.mean(values))} if values else {}),
-                "q_cycle": float(np.mean(cycles)),
+                **({"q_cycle": float(np.mean(cycles))} if cycles else {}),
             }
     (output_root / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
     print(json.dumps({"mode": args.mode, "split": args.split, "summary": summary}, indent=2, sort_keys=True))

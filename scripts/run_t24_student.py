@@ -26,6 +26,8 @@ for import_root in (PROJECT_ROOT, SCSAM_ROOT):
 import numpy as np
 import torch
 import torch.nn.functional as F
+import albumentations as A
+import cv2
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms as tv_transforms
@@ -76,6 +78,106 @@ def read_jsonl(path: Path) -> list[dict]:
     ]
 
 
+def dataloader_worker_kwargs(num_workers: int) -> dict:
+    kwargs = {"num_workers": num_workers, "pin_memory": True}
+    if num_workers > 0:
+        kwargs.update({"persistent_workers": True, "prefetch_factor": 4})
+    return kwargs
+
+
+def safe_id(value: str) -> str:
+    return value.replace("::", "__").replace("/", "_")
+
+
+def cached_isic_path(split: str, merged_id: str, kind: str) -> Path | None:
+    cache_root = os.environ.get("ISIC_RESIZED_CACHE_ROOT")
+    if not cache_root:
+        return None
+    path = Path(cache_root) / split / kind / f"{safe_id(merged_id)}.png"
+    return path if path.exists() else None
+
+
+def maybe_use_light_strong_aug(args: argparse.Namespace, transforms: dict) -> None:
+    if os.environ.get("ISIC_LIGHT_STRONG_AUG", "0") != "1":
+        return
+    transforms["train_strong"] = A.Compose(
+        [
+            A.Resize(
+                args.image_size,
+                args.image_size,
+                interpolation=cv2.INTER_NEAREST,
+                p=1.0,
+            ),
+            A.HorizontalFlip(p=0.5),
+            A.VerticalFlip(p=0.5),
+            A.RandomBrightnessContrast(p=0.6),
+            A.ShiftScaleRotate(
+                shift_limit=0.0625,
+                scale_limit=0.05,
+                rotate_limit=10,
+                p=0.5,
+            ),
+            A.CoarseDropout(
+                max_holes=20,
+                max_height=args.image_size // 20,
+                max_width=args.image_size // 20,
+                min_holes=10,
+                fill_value=0,
+                mask_fill_value=0,
+                p=0.7,
+            ),
+        ],
+        p=1.0,
+    )
+
+
+class LongTwoStreamBatchSampler:
+    """Two-stream batches with an iteration-sized epoch.
+
+    The upstream sampler defines one epoch as one pass over the tiny labeled
+    pool.  With 21 labeled ISIC anchors and labeled_bs=6 that is only three
+    batches, which starves DataLoader prefetching.  This sampler keeps the
+    same stream composition but emits max_iterations batches per iterator.
+    """
+
+    def __init__(
+        self,
+        primary_indices: list[int],
+        secondary_indices: list[int],
+        batch_size: int,
+        secondary_batch_size: int,
+        length: int,
+    ) -> None:
+        self.primary_indices = list(primary_indices)
+        self.secondary_indices = list(secondary_indices)
+        self.secondary_batch_size = secondary_batch_size
+        self.primary_batch_size = batch_size - secondary_batch_size
+        self.length = length
+        assert len(self.primary_indices) >= self.primary_batch_size > 0
+        assert len(self.secondary_indices) >= self.secondary_batch_size > 0
+
+    def __len__(self) -> int:
+        return self.length
+
+    @staticmethod
+    def _eternal(indices: list[int]):
+        while True:
+            for value in np.random.permutation(indices):
+                yield int(value)
+
+    def __iter__(self):
+        primary_iter = self._eternal(self.primary_indices)
+        secondary_iter = self._eternal(self.secondary_indices)
+        for _ in range(self.length):
+            batch = [
+                next(primary_iter) for _ in range(self.primary_batch_size)
+            ] + [
+                next(secondary_iter) for _ in range(self.secondary_batch_size)
+            ]
+            np.random.shuffle(batch)
+            yield batch
+
+
 class T22StudentDataset(Dataset):
     def __init__(self, args: argparse.Namespace, split: str, transform) -> None:
         self.split = split
@@ -118,9 +220,11 @@ class T22StudentDataset(Dataset):
                 gt = split_root / gt
             image = image.resolve()
             gt = gt.resolve()
+            cached_image = cached_isic_path(split, record["merged_id"], "images")
+            cached_gt = cached_isic_path(split, record["merged_id"], "masks")
             base = {
-                "image": image,
-                "gt": gt,
+                "image": cached_image or image,
+                "gt": cached_gt or gt,
                 "merged_id": record["merged_id"],
                 "source_dataset": record["source_dataset"],
             }
@@ -252,6 +356,7 @@ def main() -> None:
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
     transforms = build_weak_strong_transforms(args)
+    maybe_use_light_strong_aug(args, transforms)
     train_set = T22StudentDataset(args, "train", transforms)
     val_set = T22StudentDataset(args, "validation", transforms["valid_test"])
     test_set = T22StudentDataset(args, "test", transforms["valid_test"])
@@ -263,19 +368,21 @@ def main() -> None:
             batch_size=min(args.batch_size, len(labeled)),
             shuffle=True,
             drop_last=False,
-            num_workers=args.num_workers,
-            pin_memory=True,
+            **dataloader_worker_kwargs(args.num_workers),
             worker_init_fn=lambda worker_id: np.random.seed(args.seed + worker_id),
         )
     else:
-        sampler = TwoStreamBatchSampler(
-            labeled, pseudo, args.batch_size, args.batch_size - args.labeled_bs
+        sampler = LongTwoStreamBatchSampler(
+            labeled,
+            pseudo,
+            args.batch_size,
+            args.batch_size - args.labeled_bs,
+            args.max_iterations,
         )
         loader = DataLoader(
             train_set,
             batch_sampler=sampler,
-            num_workers=args.num_workers,
-            pin_memory=True,
+            **dataloader_worker_kwargs(args.num_workers),
             worker_init_fn=lambda worker_id: np.random.seed(args.seed + worker_id),
         )
     model = SamUnet(args).cuda().train()
@@ -311,13 +418,23 @@ def main() -> None:
     iteration = 0
     best_val = -1.0
     best_iteration = 0
-    val_loader = DataLoader(val_set, batch_size=1, shuffle=False, num_workers=1)
-    test_loader = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=1)
+    val_loader = DataLoader(
+        val_set, batch_size=1, shuffle=False, **dataloader_worker_kwargs(1)
+    )
+    test_loader = DataLoader(
+        test_set, batch_size=1, shuffle=False, **dataloader_worker_kwargs(1)
+    )
     validation_path = output / "validation.jsonl"
-    epochs = math.ceil(args.max_iterations / len(loader))
     log_path = output / "train.jsonl"
-    for _ in tqdm(range(epochs), ncols=80):
-        for batch in loader:
+    progress = tqdm(total=args.max_iterations, ncols=80)
+    train_iter = iter(loader)
+    try:
+        while iteration < args.max_iterations:
+            try:
+                batch = next(train_iter)
+            except StopIteration:
+                train_iter = iter(loader)
+                batch = next(train_iter)
             image = batch["image"].cuda(non_blocking=True)
             target = batch["target"].cuda(non_blocking=True)
             logits, probabilities = model(image)
@@ -391,6 +508,7 @@ def main() -> None:
             loss.backward()
             optimizer.step()
             iteration += 1
+            progress.update(1)
             lr = args.UNet_lr * (1.0 - iteration / args.max_iterations)
             optimizer.param_groups[0]["lr"] = lr
             if iteration == 1 or iteration % 20 == 0:
@@ -447,10 +565,8 @@ def main() -> None:
                     },
                     output / "training_latest.pth",
                 )
-            if iteration >= args.max_iterations:
-                break
-        if iteration >= args.max_iterations:
-            break
+    finally:
+        progress.close()
     final_checkpoint = output / "student_final.pth"
     torch.save(model.state_dict(), final_checkpoint)
     # Reconstruct and load the validation-selected checkpoint.  Test is run

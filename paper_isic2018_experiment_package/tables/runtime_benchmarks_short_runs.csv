@@ -1,0 +1,5 @@
+experiment,batch,labeled,workers,light_aug,final_iteration,val_dice,test_dice,note
+s3_cache_b12_w8_400iter,12,,8,,400,0.6277302817212185,0.6393059167777483,short throughput/debug run with resized cache
+s3_loader_gpu_b12_l6_w8_400iter,12,6,8,,400,0.6202620316342294,0.6247228363475144,short loader/GPU benchmark
+s3_loader_gpu_b12_l6_w12_400iter,12,6,12,,400,0.6349859165498142,0.6474138244033114,short loader/GPU benchmark
+s3_light_aug_heavy_b12_w8_400iter,12,,8,0,400,0.6199312255709146,0.6268137593283697,short augmentation benchmark

@@ -1,0 +1,4 @@
+setting,selected_gt_dice,oracle_gt_dice,coverage,note
+round1_base_x3_best,0.76154897369253,0.7881884575958648,1.0,selector/evaluation-only
+round2a_epoch27_x3_best,0.861104218664103,0.8788119280521406,1.0,selector/evaluation-only
+round2a_epoch27_x4_best,0.8603392616808523,0.8788119280521406,1.0,selector/evaluation-only

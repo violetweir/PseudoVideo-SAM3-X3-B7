@@ -54,7 +54,8 @@ def main() -> None:
     args.output_root.mkdir(parents=True, exist_ok=True)
 
     for split in args.splits:
-        metadata = read_jsonl(Path(config.data_path) / split / "metadata.jsonl")
+        split_root = Path(config.data_path) / split
+        metadata = read_jsonl(split_root / "metadata.jsonl")
         probability_dir = args.output_root / split / "probability"
         binary_dir = args.output_root / split / "binary"
         probability_dir.mkdir(parents=True, exist_ok=True)
@@ -62,7 +63,10 @@ def main() -> None:
         rows = []
         with torch.inference_mode():
             for row in sorted(metadata, key=lambda item: item["merged_id"]):
-                image = Image.open(row["file_name"]).convert("RGB")
+                image_path = Path(row["file_name"])
+                if not image_path.is_absolute():
+                    image_path = split_root / image_path
+                image = Image.open(image_path).convert("RGB")
                 image = image.resize(
                     (config.image_size, config.image_size), Image.Resampling.NEAREST
                 )
@@ -84,7 +88,7 @@ def main() -> None:
                         "merged_id": row["merged_id"],
                         "split": split,
                         "source_dataset": row["source_dataset"],
-                        "image_path": str(Path(row["file_name"]).resolve()),
+                        "image_path": str(image_path.resolve()),
                         "student_probability_map": str(probability_path.resolve()),
                         "student_binary_mask": str(binary_path.resolve()),
                         "student_confidence": float(confidence.mean()),

@@ -1,0 +1,9 @@
+item,value
+dataset,ISIC2018
+train_images,2075
+validation_images,259
+test_images,260
+frozen_labeled_images,21
+protocol_root,work/isic18_pseudovideo_full/protocol
+data_root,work/isic18_1pct_protocol/data
+resize_cache,work/isic18_round1_round2a_from_pseudovideo_full/isic_resized_cache_s256

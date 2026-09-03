@@ -91,12 +91,32 @@ def seed_everything(seed: int) -> None:
     torch.cuda.manual_seed_all(seed)
 
 
+def dataloader_worker_kwargs(num_workers: int) -> dict:
+    kwargs = {"num_workers": num_workers, "pin_memory": True}
+    if num_workers > 0:
+        kwargs.update({"persistent_workers": True, "prefetch_factor": 4})
+    return kwargs
+
+
+def safe_id(value: str) -> str:
+    return value.replace("::", "__").replace("/", "_")
+
+
+def cached_isic_path(split: str, merged_id: str, kind: str) -> Path | None:
+    cache_root = os.environ.get("ISIC_RESIZED_CACHE_ROOT")
+    if not cache_root:
+        return None
+    path = Path(cache_root) / split / kind / f"{safe_id(merged_id)}.png"
+    return path if path.exists() else None
+
+
 class ThreeStreamBatchSampler(Sampler[list[int]]):
     def __init__(
         self,
         streams: dict[str, list[int]],
         counts: dict[str, int],
         seed: int,
+        epoch_length: int | None = None,
     ) -> None:
         self.streams = streams
         self.counts = counts
@@ -106,11 +126,12 @@ class ThreeStreamBatchSampler(Sampler[list[int]]):
                 raise RuntimeError(f"Nonzero batch count for empty stream {name}")
         if sum(counts.values()) <= 0:
             raise RuntimeError("Empty batch")
-        self.length = max(
+        natural_length = max(
             math.ceil(len(streams[name]) / count)
             for name, count in counts.items()
             if count > 0
         )
+        self.length = max(natural_length, epoch_length or 0)
         self.epoch = 0
 
     def __len__(self) -> int:
@@ -162,9 +183,11 @@ class S27Dataset(Dataset):
                 gt = split_root / gt
             image = image.resolve()
             gt = gt.resolve()
+            cached_image = cached_isic_path(split, record["merged_id"], "images")
+            cached_gt = cached_isic_path(split, record["merged_id"], "masks")
             base = {
-                "image": image,
-                "gt": gt,
+                "image": cached_image or image,
+                "gt": cached_gt or gt,
                 "merged_id": record["merged_id"],
                 "source_dataset": record["source_dataset"],
             }
@@ -415,15 +438,17 @@ def main() -> None:
         streams,
         {"gt": args.gt_bs, "original": args.original_bs, "new": args.new_bs},
         args.seed,
+        epoch_length=args.max_iterations,
     )
     train_loader = DataLoader(
         train_set,
         batch_sampler=sampler,
-        num_workers=args.num_workers,
-        pin_memory=True,
+        **dataloader_worker_kwargs(args.num_workers),
         worker_init_fn=lambda worker_id: np.random.seed(args.seed + worker_id),
     )
-    val_loader = DataLoader(val_set, batch_size=1, shuffle=False, num_workers=1)
+    val_loader = DataLoader(
+        val_set, batch_size=1, shuffle=False, **dataloader_worker_kwargs(1)
+    )
     def evaluate_validation(current_model: torch.nn.Module) -> dict:
         return evaluate(
             current_model,

@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""Prepare an ISIC18 B7-selected dataset for MedSAM3-style SAM3 LoRA."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import pycocotools.mask as mask_utils
+from PIL import Image
+
+
+CATEGORY_ID = 1
+CATEGORY_NAME = "skin lesion"
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def resolve_metadata_path(root: Path, value: str | Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else root / path
+
+
+def mask_to_rle(mask: np.ndarray) -> dict:
+    rle = mask_utils.encode(np.asfortranarray(mask.astype(np.uint8)))
+    if isinstance(rle["counts"], bytes):
+        rle["counts"] = rle["counts"].decode("ascii")
+    return rle
+
+
+def mask_to_bbox(mask: np.ndarray) -> list[float]:
+    ys, xs = np.where(mask)
+    return [
+        float(xs.min()),
+        float(ys.min()),
+        float(xs.max() - xs.min() + 1),
+        float(ys.max() - ys.min() + 1),
+    ]
+
+
+def write_coco_split(split_dir: Path, records: list[dict]) -> None:
+    split_dir.mkdir(parents=True, exist_ok=True)
+    image_dir = split_dir / "images"
+    image_dir.mkdir(parents=True, exist_ok=True)
+    images = []
+    annotations = []
+    ann_id = 1
+    for image_id, record in enumerate(records, 1):
+        src_image = Path(record["image_path"])
+        src_mask = Path(record["mask_path"])
+        safe_name = record["target_id"].replace("::", "__").replace("/", "_")
+        rel_image = f"images/{safe_name}{src_image.suffix.lower() or '.jpg'}"
+        dst_image = split_dir / rel_image
+        if not dst_image.exists():
+            dst_image.symlink_to(src_image.resolve())
+        with Image.open(src_mask).convert("L") as im:
+            mask = np.asarray(im) > 127
+        if not mask.any():
+            print(f"WARNING: empty mask for {record['target_id']}, skipping annotation")
+            continue
+        with Image.open(src_image) as im:
+            width, height = im.size
+        images.append(
+            {"id": image_id, "file_name": rel_image, "width": width, "height": height}
+        )
+        annotations.append(
+            {
+                "id": ann_id,
+                "image_id": image_id,
+                "category_id": CATEGORY_ID,
+                "bbox": mask_to_bbox(mask),
+                "segmentation": mask_to_rle(mask),
+                "area": float(mask.sum()),
+                "iscrowd": 0,
+            }
+        )
+        ann_id += 1
+    coco = {
+        "images": images,
+        "annotations": annotations,
+        "categories": [{"id": CATEGORY_ID, "name": CATEGORY_NAME}],
+    }
+    (split_dir / "_annotations.coco.json").write_text(
+        json.dumps(coco, indent=2), encoding="utf-8"
+    )
+    print(f"{split_dir.name}: images={len(images)} annotations={len(annotations)}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pseudo-manifest", type=Path, required=True)
+    parser.add_argument("--labeled-list", type=Path, required=True)
+    parser.add_argument("--validation-metadata", type=Path, required=True)
+    parser.add_argument("--output-root", type=Path, required=True)
+    args = parser.parse_args()
+
+    pseudo_rows = read_jsonl(args.pseudo_manifest)
+    train_records = [
+        {
+            "image_path": row.get("target_image_path") or row.get("image_path"),
+            "mask_path": row["pseudo_mask_path"],
+            "sample_type": row.get("sample_type", "b7_pseudo"),
+            "target_id": row["target_id"],
+        }
+        for row in pseudo_rows
+        if row.get("pseudo_mask_path")
+    ]
+    missing_image = [row for row in train_records if not row["image_path"]]
+    if missing_image:
+        raise SystemExit(f"Missing image_path for {len(missing_image)} pseudo rows")
+
+    for image_path in [
+        Path(line.strip())
+        for line in args.labeled_list.read_text().splitlines()
+        if line.strip()
+    ]:
+        mask_path = Path(str(image_path).replace("/images/", "/masks/")).with_suffix(".png")
+        if not image_path.exists() or not mask_path.exists():
+            raise SystemExit(f"Missing GT pair: image={image_path}, mask={mask_path}")
+        train_records.append(
+            {
+                "image_path": str(image_path),
+                "mask_path": str(mask_path),
+                "sample_type": "human_gt_anchor",
+                "target_id": image_path.stem,
+            }
+        )
+
+    validation_root = args.validation_metadata.parent
+    val_records = [
+        {
+            "image_path": str(resolve_metadata_path(validation_root, row["file_name"])),
+            "mask_path": str(resolve_metadata_path(validation_root, row["mask_file_name"])),
+            "sample_type": "gt",
+            "target_id": row["merged_id"],
+        }
+        for row in read_jsonl(args.validation_metadata)
+    ]
+
+    write_coco_split(args.output_root / "train", train_records)
+    write_coco_split(args.output_root / "valid", val_records)
+    print(
+        json.dumps(
+            {
+                "train": len(train_records),
+                "train_pseudo": len(pseudo_rows),
+                "train_human_gt": len(train_records) - len(pseudo_rows),
+                "valid": len(val_records),
+                "category": CATEGORY_NAME,
+                "output_root": str(args.output_root),
+            },
+            indent=2,
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

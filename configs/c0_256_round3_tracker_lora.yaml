@@ -1,0 +1,77 @@
+experiment:
+  name: c0_256_round3_tracker_lora_t3_t4
+  seed: 2026
+  root: work/rerun_c0_256_round3_tracker_lora_t3_t4
+  canvas: 256
+protocol:
+  initialization_checkpoint: work/rerun_c0_256_sam3knn_s256_base/medsam3_lora_b0_b6_e50/e33_full_evaluation/e33_merged_video.pt
+  initialization_sha256: 2eb33d5be28baf8d579eddfec2a75d2ee7b8a0c26a600603983da2db99a52280
+  protocol_manifest: work/kvasir_1pct_anchors/protocol/merged_manifest.jsonl
+  support_manifest: work/kvasir_1pct_anchors/protocol/support_manifest.jsonl
+  pseudo_manifest: work/rerun_c0_256_round2a_fixed_knn_e33/manifests/x4_train_b7.jsonl
+  pseudo_manifest_sha256: 7f8e76ed708e9fd2b28b36e1d7672b179af7bae3a34bb493b06f905b8331da88
+  route_roots:
+    sam3enc_anchor_conditioned_target_pooling: work/rerun_c0_256_sam3knn_s256_base/stage1_feature_knn_b0_b6/sam3enc_anchor_conditioned_target_pooling
+    sam3enc_anchor_conditioned_patch_correspondence: work/rerun_c0_256_sam3knn_s256_base/stage1_feature_knn_b0_b6/sam3enc_anchor_conditioned_patch_correspondence
+  train_route_sha256:
+    sam3enc_anchor_conditioned_target_pooling: 4ee121f46bffda6a5c9eae529451dd966f0ba532db36987b72a63afab72933a2
+    sam3enc_anchor_conditioned_patch_correspondence: eefe9de51015840b756e1bc8d4eb63d20709490f17281032eb8eb0a2fe3410fb
+  sequence_manifest: work/rerun_c0_256_round3_tracker_stage4/sequence_manifests/train_sequences.jsonl
+  spatial_feature_cache: work/rerun_c0_256_round3_tracker_stage4/spatial_feature_cache
+groups:
+  T0: {trainable: frozen, steps: 0}
+  T3: {trainable: memory_attention_lora, steps: 3000, lr: 1.0e-6}
+  T4: {trainable: memory_attention_decoder_lora, steps: 3000, lr: 1.0e-6}
+lora:
+  rank: 4
+  alpha: 8
+  dropout: 0.03
+training:
+  sequence_batch_size: 1
+  gradient_accumulation: 1
+  precision: bf16
+  optimizer: adamw
+  weight_decay: 0.01
+  warmup_steps: 200
+  min_lr_ratio: 0.05
+  validation_interval: 0
+  save_steps: [0, 100, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000]
+  grad_clip_norm: 1.0
+  num_workers: 0
+  cache_features: true
+  abort_on_frozen_change: true
+  checkpoint_selection:
+    metric: validation_mean_b3_b6_combined_dice
+    formula: (b3+b4+b5+b6)/4
+    tie_break: [higher_b6, earlier_checkpoint]
+curriculum:
+  - {until_fraction: 0.2, bridges: [0, 1, 2]}
+  - {until_fraction: 0.6, bridges: [1, 2, 3, 4]}
+  - {until_fraction: 1.0, bridges: [3, 4, 5, 6]}
+sampling:
+  mode_ratio:
+    sam3enc_anchor_conditioned_target_pooling: 1
+    sam3enc_anchor_conditioned_patch_correspondence: 1
+loss:
+  dice_weight: 1.0
+  bce_weight: 1.0
+  iou_weight: 0.2
+  object_weight: 0.1
+  terminal_frame_weight: 1.0
+  anchor_frame_weight: 1.0
+  pseudo_quality_weight: true
+long_chain_loss:
+  enabled: false
+  depth_weight: 0.0
+  consistency_weight: 0.0
+evaluation:
+  modes: [sam3enc_anchor_conditioned_target_pooling, sam3enc_anchor_conditioned_patch_correspondence]
+  bridges: [0, 1, 2, 3, 4, 5, 6]
+  validation_split: validation
+  test_split: test
+  use_fixed_routes: true
+  no_cycle: true
+path_sensitivity:
+  target_count: 20
+  seed: 2026
+  shuffle: bridge_order

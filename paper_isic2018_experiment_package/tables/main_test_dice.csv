@@ -1,0 +1,13 @@
+method,test_dice,metric_resolution,prompt_or_setting,paper_note
+SynFoC-SAM,0.8733601769570983,reported_by_baseline,SAM baseline,Strong external SAM-style baseline.
+SAM3_epoch50 direct text-only,0.8749861649724601,1008,text/category only: skin lesion; no image prompt,Not directly comparable to 256-mask student table unless reported as high-resolution SAM3 direct.
+Ours X4_best student mask,0.8704142092801437,256,"Round1+Round2A, student mask",Main 256-resolution student result.
+SAM3_epoch50 direct text-only,0.8680087189369691,256,text/category only: skin lesion; no image prompt,Fair 256-resolution direct SAM3 comparison.
+SAM3_epoch27 direct text-only,0.8682181161139423,1008,text/category only: skin lesion; no image prompt,Epoch27 was selected by validation Dice for Round2A teacher.
+Ours X3_best + epoch27 B7 selector,0.861104218664103,256,B7 selector evaluation,Selector/evaluation-only Dice; do not describe as final student mask Dice.
+Ours X4_best + epoch27 B7 selector,0.8603392616808523,256,B7 selector evaluation,Selector/evaluation-only Dice; do not describe as final student mask Dice.
+SCSAM-SAM,0.8522,reported_by_baseline,SAM baseline,Rerun result from 2026-09-03.
+Ours S3 best,0.8548721257324698,256,Round1 student,From Round1 student training summary.
+Ours S2 best,0.8483414130540559,256,Round1 student,From Round1 student training summary.
+SynFoC-UNet,0.8413850904851117,reported_by_baseline,UNet baseline,External baseline.
+SCSAM-UNet,0.830954,reported_by_baseline,UNet branch,Rerun result from 2026-09-03.

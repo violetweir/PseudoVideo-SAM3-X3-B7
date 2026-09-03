@@ -1,0 +1,3 @@
+baseline,best_val_sam_dice,best_val_unet_dice,test_sam_dice,test_unet_dice,source
+SynFoC,0.8814066220867678,0.8540554553304895,0.8733601769570983,0.8413850904851117,work/isic18_1pct_protocol/synfoc/summary.json
+SCSAM,,,0.8522,0.830954,work/isic18_1pct_protocol/logs/scsam_test_best_rerun_20260903_160852.log
