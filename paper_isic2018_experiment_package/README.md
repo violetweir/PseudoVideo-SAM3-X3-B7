@@ -16,6 +16,8 @@ Use this package as the first stop when writing the paper. The raw logs and JSON
 - `05_sam3_lora_direct.md`: LoRA/direct SAM3 results and the 256 vs 1008 distinction.
 - `06_runtime_and_engineering_notes.md`: loader/cache/speed notes from the debugging runs.
 - `tables/`: CSV tables for manuscript or spreadsheet import.
+- `tables/base_sam3_knn_patch_correspondence_b0_b6.csv`: base SAM3 Patch Correspondence test Dice, b0-b6.
+- `tables/base_sam3_knn_two_modes_b0_b6.csv`: base SAM3 Target Pooling, Patch Correspondence, and combined test Dice, b0-b6.
 - `figures/`: copied bridge-benefit figure.
 - `raw_records/`: copied master JSON and earlier records.
 - `source_map.csv`: where every important number came from.

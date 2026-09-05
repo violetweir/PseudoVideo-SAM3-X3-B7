@@ -1,16 +1,14 @@
 # Bridge Analysis
 
-## Base SAM3-KNN Target Pooling, b0-b6
+## Base SAM3-KNN Test, b0-b6
 
-| Bridge | Test Dice |
-|---|---|
-| b0 | 0.715039 |
-| b1 | 0.710054 |
-| b2 | 0.716470 |
-| b3 | 0.722435 |
-| b4 | 0.724580 |
-| b5 | 0.727414 |
-| b6 | 0.728152 |
+| Mode | b0 | b1 | b2 | b3 | b4 | b5 | b6 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| target_pooling | 0.715039 | 0.710054 | 0.716470 | 0.722435 | 0.724580 | 0.727414 | 0.728152 |
+| patch_correspondence | 0.681840 | 0.690171 | 0.689701 | 0.690101 | 0.685299 | 0.688950 | 0.674552 |
+| combined | 0.698439 | 0.700112 | 0.703086 | 0.706268 | 0.704940 | 0.708182 | 0.701352 |
+
+The Patch Correspondence row is now included explicitly. The combined row averages both modes as in `base_test_bridge_b0_b6.tsv`.
 
 ## Epoch27 LoRA Long-Chain Test, b0-b7
 
