@@ -1,0 +1,9 @@
+experiment,stage_or_split,metric,value,source,notes
+old_t21_dynamic_pseudovideo,round0_train,dice_mean,0.8195284215415344,work/isic18_pseudovideo_full/t21_dynamic_pseudovideo/summary.json,n=2054; quality_mean=0.8530429826073205; accepted_count=1522
+old_t21_dynamic_pseudovideo,round0_train,quality_gt_dice_pearson,0.7035108185170024,work/isic18_pseudovideo_full/t21_dynamic_pseudovideo/summary.json,spearman=0.4825355372475933
+old_t21_dynamic_pseudovideo,test_pool0,dice_mean,0.8227132217463443,work/isic18_pseudovideo_full/t21_dynamic_pseudovideo/summary.json,n=260; quality_mean=0.8474347242180235; accepted_count=0
+old_t21_dynamic_pseudovideo,test_pool0,quality_gt_dice_pearson,0.7007680030671548,work/isic18_pseudovideo_full/t21_dynamic_pseudovideo/summary.json,spearman=0.40698504267304986
+old_committee_S2_final,validation,best_validation_dice,0.8547567576270142,work/isic18_pseudovideo_full/committee_students/S2_final/summary.json,best_iteration=16800; final_iteration=40000
+old_committee_S2_final,test,test_dice,0.8462784717006769,work/isic18_pseudovideo_full/committee_students/S2_final/summary.json,test_iou=0.762397627512938
+old_protocol,split_counts,counts,"{""test"": 260, ""train"": 2075, ""validation"": 259}",work/isic18_pseudovideo_full/protocol/protocol_summary.json,support_count=21
+old_pseudo1522_protocol,pseudo_pool,pseudo_count,974,work/isic18_pseudovideo_full/pseudo1522/protocol/protocol.json,"anchor_count=21; route_type_counts={""two_bridges"": 336, ""one_bridge"": 363, ""direct"": 275}"

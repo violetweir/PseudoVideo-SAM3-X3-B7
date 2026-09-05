@@ -1,0 +1,6 @@
+scope,command_or_entry,status,output,notes
+Kvasir root,work/kvasir_1pct_anchors,existing experiment root,paper_kvasir_experiment_package,Main Kvasir 1pct anchor experiments.
+ClinicDB external Kvasir8,work/clinicdb_external_kvasir8,existing external evaluation root,work/clinicdb_external_kvasir8,External ClinicDB evaluation using Kvasir anchors/support.
+SynFoC baseline,see work/kvasir_1pct_anchors/logs/kvasir_1pct_synfoc_baseline.log and work/kvasir_1pct_anchors/synfoc_kvasir_1pct/protocol.json,complete,work/kvasir_1pct_anchors/synfoc_kvasir_1pct/summary.json,SAM test Dice and UNet test Dice are in curated_metric_ledger_long.csv.
+SCSAM baseline,see work/kvasir_1pct_anchors/logs/kvasir_1pct_scsam_baseline.log,existing logs,work/kvasir_1pct_anchors/scsam_kvasir_1pct,"Exact metric lines, if present, are extracted into log_metric_lines.csv."
+LoRA p491/e20 route eval,see work/kvasir_1pct_anchors/lora_experiment/* and stage1_feature_knn_vitb256/*/propagation_quality_*_lora_p491_e20,complete artifacts found,route_family_and_bridge_dice.csv,Route-family Dice table includes all discovered bridge/direct rows.

@@ -1,0 +1,266 @@
+source,line,command_or_template,notes
+work/kvasir_1pct_anchors/logs/kvasir_1pct_synfoc_baseline.log,1,python train.py --dataset ClinicDB --dataset_label Kvasir-SEG 1pct anchors --data_path /Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/kvasir_1pct_anchors/baseline_data --labeled_list /Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/kvasir_1pct_anchors/protocol/frozen_labeled_images.txt --output_dir /Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/kvasir_1pct_anchors/synfoc_kvasir_1pct --save_name fixed8_seed2026 --model MedSAM --ckpt /Data_8TB/lht/models/medsam_vit_b.pth --max_iterations 40000 --num_eval_iter 500 --label_bs 4 --unlabel_bs 4 --test_bs 8 --img_size 256 --base_lr 0.03 --seed 2026 --AdamW --warmup --save_model --overwrite --gpu 1,auto-extracted; verify shell variables for exact rerun
+work/kvasir_1pct_anchors/phase1/logs/orchestrator.log,74,[10:27:34] launched detached: /home/violet/anaconda3/envs/mkunet_mamba/bin/python scripts/run_s27_student.py --data-path work/kvasir_1pct_anchors/baseline_data --labeled-list work/kvasir_1pct_anchors/protocol/frozen_labeled_images.txt --pseudo-manifest work/kvasir_1pct_anchors/phase1/pseudo_manifest_x3.jsonl --output-dir work/kvasir_1pct_anchors/phase1/students/X3 --experiment X3 --seed 2026 --batch-size 12 --gt-bs 3 --original-bs 3 --new-bs 6 --max-iterations 40000 --val-interval 200 --num-workers 4 -> work/kvasir_1pct_anchors/phase1/logs/X3_detached.log,auto-extracted; verify shell variables for exact rerun
+work/kvasir_1pct_anchors/synfoc_kvasir_1pct/train.py,134,See https://docs.python.org/3/library/itertools.html#itertools.cycle for more details.,auto-extracted; verify shell variables for exact rerun
+work/kvasir_1pct_anchors/synfoc_kvasir_1pct/train.py,1002,"cmd = "" "".join([""python""] + sys.argv)",auto-extracted; verify shell variables for exact rerun
+scripts/run_round2_eval_variant.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_round2_eval_variant.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_t21_dynamic_pseudovideo.py,1184,"""python"": platform.python_version(),",auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,16,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1309,"print(f""   python validate_sam3_lora.py \\"")",auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1374,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1377,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1380,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1383,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.py,1386,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/summarize_c0_256_round2b_e33_test_bridges.py,82,"""```bash"",",auto-extracted; verify shell variables for exact rerun
+scripts/summarize_c0_256_round2b_e33_test_bridges.py,84,"""DEVICE=0 bash scripts/run_c0_256_round2b_e33_test_bridges_only.sh"",",auto-extracted; verify shell variables for exact rerun
+scripts/run_mask_visual_lambda_scan.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_mask_visual_lambda_scan.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_1pct_scsam_synfoc_baselines.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_1pct_scsam_synfoc_baselines.sh,5,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_t20_synfoc_baseline.py,22,"parser.add_argument(""--python"", default=sys.executable)",auto-extracted; verify shell variables for exact rerun
+scripts/run_t20_synfoc_baseline.py,39,"args.python,",auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_1pct_plus_hq_pseudo_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_1pct_plus_hq_pseudo_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_eval1_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_eval1_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_eval_forward.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_eval_forward.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_post_t24.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_post_t24.sh,9,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_post_t24.sh,10,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,9,SAMPY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,10,MKPY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,36,"CUDA_VISIBLE_DEVICES=$gpu ""$MKPY"" scripts/export_t25_student_predictions.py --run-dir ""$PHASE/students/X4"" --checkpoint ""$checkpoint"" --output-root ""$output"" --splits train validation test",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,57,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$QROOT"" --student-predictions ""$predictions/student_predictions_${split}.jsonl"" --split ""$split"" --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 --output ""$B7/${selector}_${split}.jsonl"" --summary ""$B7/${selector}_${split}.summary.json"" 2>&1 | tee -a ""$LOG""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2_x4_b7_closeout.sh,68,"""$SAMPY"" scripts/summarize_c0_256_round2_b7_closeout.py --root ""$B7"" --output ""$B7/x3_x4_e33_b7_comparison.json"" 2>&1 | tee -a ""$LOG""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2c_lesion_anchor_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2c_lesion_anchor_validation.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_triple_visual_qwen_scan.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_triple_visual_qwen_scan.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_gpu0_aux.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_gpu0_aux.sh,11,"bash scripts/run_c0_256_b7_lora_gpu0_aux.sh >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_e33_train_propagation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_e33_train_propagation.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2d_anchor_only_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2d_anchor_only_validation.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/summarize_c0_256_round2b_factorial.py,204,"""```bash"",",auto-extracted; verify shell variables for exact rerun
+scripts/summarize_c0_256_round2b_factorial.py,206,"""DEVICE=0 bash scripts/run_c0_256_round2b_topology_refresh_factorial.sh"",",auto-extracted; verify shell variables for exact rerun
+scripts/run_propagation_quality_main_modes.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_propagation_quality_main_modes.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_safe_v2_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_safe_v2_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2b_topology_refresh_factorial.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2b_topology_refresh_factorial.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_eval_official_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_eval_official_validation.sh,7,"PY=""${PY:-/home/violet/anaconda3/envs/sam3/bin/python}""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_lora_e33_full_eval_gpu0.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_lora_e33_full_eval_gpu0.sh,15,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_lora_e07_val_combined_gpu1.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_lora_e07_val_combined_gpu1.sh,14,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/queue_clinicdb_external_pairwise_vitb256.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/queue_clinicdb_external_pairwise_vitb256.sh,14,"bash scripts/run_clinicdb_external_pairwise_vitb256.sh >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_orchestrator.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_orchestrator.sh,9,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_orchestrator.sh,30,"setsid nohup ""$@"" > ""$out"" 2>&1 < /dev/null &",auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_full_ft_repro_then_hq.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_full_ft_repro_then_hq.sh,7,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_b7_calibration.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_b7_calibration.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_eval_ft20.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_eval_ft20.sh,5,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_vitb256_lora_p491_e20.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_vitb256_lora_p491_e20.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_student_exports.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_student_exports.sh,6,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_feature_knn_routes.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_feature_knn_routes.sh,6,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_train_and_pseudo.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_train_and_pseudo.sh,11,bash scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_routes.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_routes.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/analyze_c3.py,3,Usage: python scripts/analyze_c3.py <eval_dir> [out_json],auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_e45_e50_test.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_e45_e50_test.sh,11,"bash scripts/run_c0_256_b7_lora_e45_e50_test.sh >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_validation_eval_forward.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_validation_eval_forward.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,15,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1241,"print(f""   python validate_sam3_lora.py \\"")",auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1306,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1309,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1312,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1315,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir_e50.pre_direct_dice.py,1318,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_stage2_4.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_stage2_4.sh,9,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round3_post_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round3_post_train.sh,17,bash scripts/run_c0_256_round3_tracker.sh validate,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round3_post_train.sh,18,bash scripts/run_c0_256_round3_tracker.sh test,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round3_post_train.sh,19,/home/violet/anaconda3/envs/sam3/bin/python scripts/finalize_round3_report.py,auto-extracted; verify shell variables for exact rerun
+scripts/analyze_c3_freeze.py,4,"python scripts/analyze_c3_freeze.py <val_eval_dir> <rules_out.json> [--taus 0.80,0.85,0.90]",auto-extracted; verify shell variables for exact rerun
+scripts/analyze_c3_freeze.py,5,python scripts/analyze_c3_freeze.py <val_eval_dir> <rules_out.json> --apply-test <test_eval_dir> <test_report_out.json>,auto-extracted; verify shell variables for exact rerun
+scripts/run_eval_ft1pct_pq_router.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_eval_ft1pct_pq_router.sh,6,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2b_e33_test_bridges_only.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2b_e33_test_bridges_only.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_t19_scsam_baseline.py,23,"parser.add_argument(""--python"", default=sys.executable)",auto-extracted; verify shell variables for exact rerun
+scripts/run_t19_scsam_baseline.py,39,"args.python,",auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_train.sh,9,"PY=""${PY:-/home/violet/anaconda3/envs/sam3/bin/python}""",auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_eval_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_eval_validation.sh,7,"PY=""${PY:-/home/violet/anaconda3/envs/sam3/bin/python}""",auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_pre_t24.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_phase1_pre_t24.sh,6,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_train_target_gpu0.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_train_target_gpu0.sh,11,bash scripts/run_c0_256_sam3knn_s256_train_target_gpu0.sh,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_max6_all_models.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_max6_all_models.sh,7,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_imr_s256.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_imr_s256.sh,13,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_original_visual_lambda_scan.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_original_visual_lambda_scan.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_clinicdb_external_pairwise_vitb256.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_clinicdb_external_pairwise_vitb256.sh,6,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_vitb256.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_vitb256.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/analyze_consensus.py,3,Zero new inference. Usage: python scripts/analyze_consensus.py <mode_dir> [out_json],auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_sam3enc.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_knn_sam3enc.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_anchor_conditioned_routes.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_anchor_conditioned_routes.sh,5,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_safe_v1_after_train.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_safe_v1_after_train.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_b0_b6_lora_e50.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_b0_b6_lora_e50.sh,12,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_e45_e50_test.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_e45_e50_test.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_validation.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,9,MKPY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,16,"DEVICE=0 bash scripts/run_c0_256_round2a_e33_train_propagation.sh >> ""$PHASE/nohup_train_propagation.log"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,22,"DEVICE=0 bash scripts/run_c0_256_round2a_e33_train_propagation.sh >> ""$PHASE/nohup_train_propagation.log"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,36,"if DEVICE=0 bash scripts/run_c0_256_round2a_build_pool_and_x4.sh >> ""$PHASE/x4_pipeline.log"" 2>&1; then",auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_round2a_pipeline.sh,46,"CUDA_VISIBLE_DEVICES=0 ""$MKPY"" scripts/eval_c0_256_round2a_x3_x4.py --x3-run work/rerun_c0_256_sam3knn_s256_base/students/X3 --x4-run ""$PHASE/students/X4"" --output ""$PHASE/x3_vs_x4.json"" >> ""$PHASE/x3_vs_x4.log"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,67,"cfg.setdefault(""sam3_python"", sys.executable)",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,68,"cfg.setdefault(""student_python"", sys.executable)",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,111,"sam3_py = cfg[""sam3_python""]",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,112,"student_py = cfg[""student_python""]",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,142,"""--python"", student_py,",auto-extracted; verify shell variables for exact rerun
+scripts/run_method_ladder.py,152,"""--python"", student_py,",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_gpu0_aux.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_gpu0_aux.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round3_tracker.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round3_tracker.sh,4,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_route_selector_vitb256.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_route_selector_vitb256.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_prepare.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_routeco_v1_prepare.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_round2_eval.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_round2_eval.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,8,MKPY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,51,"""$MKPY"" scripts/select_phase1_mainline_pseudo568.py --quality-root ""$ROOT"" --min-bridge 0 --max-bridge 6 --output ""$PHASE/pseudo_manifest_original_b0_b6.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,56,"""$MKPY"" scripts/prepare_phase1_s3_consensus.py --original-manifest ""$PHASE/pseudo_manifest_original_b0_b6.jsonl"" --quality-root ""$ROOT"" --min-bridge 0 --max-bridge 6 --output-root ""$PHASE/S3_consensus_b0_b6"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_and_pseudo.sh,64,"""$MKPY"" scripts/select_phase1_mainline_pseudo568.py --quality-root ""$ROOT"" --min-bridge 3 --max-bridge 6 --output ""$PHASE/pseudo_manifest_original_b3_b6_control.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_ft3ep_lora_test_eval.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_ft3ep_lora_test_eval.sh,11,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_audit_x3.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_audit_x3.sh,6,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,7,SAMPY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,8,MKPY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,15,"""$SAMPY"" -c 'import json,sys; print(json.load(open(sys.argv[1]))[""recommended""][""min_b7""])' ""$PHASE/b7_calibration/calibration_frontier.json""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,34,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$QROOT"" --student-predictions ""$X3ROOT/predictions/X3_best/student_predictions_train.jsonl"" --split train --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 ""$THRESHOLD"" --canvas 256 --sample-type original --output ""$PHASE/manifests/x4_train_b7_raw.jsonl"" --summary ""$PHASE/manifests/x4_train_b7_raw.summary.json"" 2>&1 | tee -a ""$LOG""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,46,"""$SAMPY"" scripts/prepare_round2a_x4_manifest.py --b7-manifest ""$PHASE/manifests/x4_train_b7_raw.jsonl"" --x3-reference ""$X3ROOT/pseudo_manifest_x3.jsonl"" --output ""$PHASE/manifests/x4_train_b7.jsonl"" --summary ""$PHASE/manifests/x4_train_b7.summary.json"" 2>&1 | tee -a ""$LOG""",auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round2a_build_pool_and_x4.sh,54,"CUDA_VISIBLE_DEVICES=${DEVICE:-0} ""$MKPY"" scripts/run_s27_student.py --data-path ""$DATA"" --labeled-list ""$LABELS"" --pseudo-manifest ""$PHASE/manifests/x4_train_b7.jsonl"" --output-dir ""$OUT"" --experiment X4_round2a --seed 2026 --batch-size 12 --gt-bs 3 --original-bs 3 --new-bs 6 --max-iterations 40000 --val-interval 200 --num-workers 4 --resume 2>&1 | tee -a ""$LOG""",auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_multiframe_weighted_models.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_multiframe_weighted_models.sh,5,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_eval1_best_saved_ckpt1.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_kvasir_hq_finite_guard_lr025_eval1_best_saved_ckpt1.sh,6,SAM3_PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_routes.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_b7_routes.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_bbox_mask_sam3only.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_bbox_mask_sam3only.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,8,SAMPY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,9,MKPY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,54,"""$SAMPY"" scripts/stage1_feature_knn_routes.py --mode ""$mode"" --feature-source sam3_base --feature-size 256 --knn-feature patch_mean --split ""$split"" --min-bridge 0 --max-bridge 6 --beam-width 32 --protocol-root ""$PROTO"" --output-root ""$ROUTE_ROOT"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,70,"""$SAMPY"" - ""$ROUTE_ROOT"" <<'PY' >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,106,"""$SAMPY"" scripts/eval_route_propagation_quality.py --checkpoint ""$BASE_CKPT"" --mode ""$mode"" --root ""$ROUTE_ROOT"" --split ""$split"" --canvas 256 --resume >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,115,"""$SAMPY"" scripts/summarize_c0_256_bridge_metrics.py --quality-root ""$ROUTE_ROOT"" --split ""$split"" --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --output-json ""$ROUND1/base_${split}_bridge_b0_b6.json"" --output-tsv ""$ROUND1/base_${split}_bridge_b0_b6.tsv"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,134,"""$MKPY"" scripts/prepare_isic_resized_cache.py --data-path ""$DATA"" --output-root ""$CACHE_ROOT"" --image-size 256 --splits train validation test >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,150,"""$MKPY"" scripts/select_phase1_mainline_pseudo568.py --quality-root ""$ROUTE_ROOT"" --min-bridge 0 --max-bridge 6 --output ""$ROUND1/pseudo_manifest_original_b0_b6.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,155,"""$MKPY"" scripts/prepare_phase1_s3_consensus.py --original-manifest ""$ROUND1/pseudo_manifest_original_b0_b6.jsonl"" --quality-root ""$ROUTE_ROOT"" --min-bridge 0 --max-bridge 6 --output-root ""$ROUND1/S3_consensus_b0_b6"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,170,"""$MKPY"" scripts/run_t24_student.py --data-path ""$DATA"" --labeled-list ""$LABELS"" --pseudo-manifest ""$manifest"" --output-dir ""$ROUND1/students/$student"" --experiment ""$student"" --seed 2026 --max-iterations 40000 --val-interval 200 --num-workers 8 >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,183,"""$MKPY"" scripts/export_t25_student_predictions.py --run-dir ""$ROUND1/students/$student"" --checkpoint ""$ROUND1/students/$student/$checkpoint"" --output-root ""$ROUND1/predictions/$output_name"" --splits train validation test >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,193,"""$MKPY"" scripts/phase1_audit_tiers.py --train-metadata ""$DATA/train/metadata.jsonl"" --labeled-list ""$LABELS"" --quality-root ""$ROUTE_ROOT"" --original-manifest ""$ROUND1/pseudo_manifest_original_b0_b6.jsonl"" --predictions ""$ROUND1/predictions/S2_valbest/student_predictions_train.jsonl"" --predictions-name S2_valbest --predictions ""$ROUND1/predictions/S2_final/student_predictions_train.jsonl"" --predictions-name S2_final --predictions ""$ROUND1/predictions/S3_valbest/student_predictions_train.jsonl"" --predictions-name S3_valbest --predictions ""$ROUND1/predictions/S3_final/student_predictions_train.jsonl"" --predictions-name S3_final --output-dir ""$ROUND1/audit"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,204,"""$MKPY"" scripts/phase1_build_x3_manifest.py --original ""$ROUND1/pseudo_manifest_original_b0_b6.jsonl"" --tier-a ""$ROUND1/audit/tier_A.jsonl"" --tier-b ""$ROUND1/audit/tier_B.jsonl"" --output ""$ROUND1/pseudo_manifest_x3.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,213,"""$MKPY"" scripts/run_s27_student.py --data-path ""$DATA"" --labeled-list ""$LABELS"" --pseudo-manifest ""$ROUND1/pseudo_manifest_x3.jsonl"" --output-dir ""$ROUND1/students/X3"" --experiment X3_isic18_round1 --seed 2026 --batch-size 12 --gt-bs 3 --original-bs 3 --new-bs 6 --max-iterations 40000 --val-interval 200 --num-workers 8 >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,224,"""$MKPY"" scripts/export_t25_student_predictions.py --run-dir ""$ROUND1/students/X3"" --checkpoint ""$ROUND1/students/X3/student_best.pth"" --output-root ""$ROUND1/predictions/X3_best"" --splits train validation test >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,234,"""$MKPY"" scripts/export_t25_student_predictions.py --run-dir ""$ROUND1/students/X3"" --checkpoint ""$ROUND1/students/X3/student_final.pth"" --output-root ""$ROUND1/predictions/X3_final"" --splits train validation test >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,252,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUTE_ROOT"" --student-predictions ""$ROUND1/predictions/X3_best/student_predictions_validation.jsonl"" --split validation --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 --output ""$ROUND1/b7_calibration/validation_all.jsonl"" --summary ""$ROUND1/b7_calibration/validation_all.summary.json"" --all-candidates-output ""$ROUND1/b7_calibration/validation_all_candidates.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,261,"""$SAMPY"" scripts/summarize_round2a_b7_calibration.py --manifest ""$ROUND1/b7_calibration/validation_all.jsonl"" --target-dice ""${ISIC_B7_TARGET_DICE:-0.90}"" --output-json ""$ROUND1/b7_calibration/calibration_frontier.json"" --output-tsv ""$ROUND1/b7_calibration/calibration_frontier.tsv"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,267,"THRESHOLD=$(""$SAMPY"" - ""$ROUND1/b7_calibration/calibration_frontier.json"" <<'PY'",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,275,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUTE_ROOT"" --student-predictions ""$ROUND1/predictions/X3_best/student_predictions_train.jsonl"" --split train --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 ""$THRESHOLD"" --canvas 256 --sample-type isic18_round1_x3_best_b7 --output ""$LORA_RUN/train_b7_lora_manifest.jsonl"" --summary ""$LORA_RUN/train_b7_lora_manifest.summary.json"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,284,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUTE_ROOT"" --student-predictions ""$ROUND1/predictions/X3_best/student_predictions_test.jsonl"" --split test --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 --output ""$ROUND1/b7_calibration/test_x3_best_b7.jsonl"" --summary ""$ROUND1/b7_calibration/test_x3_best_b7.summary.json"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,292,"""$SAMPY"" scripts/prepare_isic18_b7_medsam3_dataset.py --pseudo-manifest ""$LORA_RUN/train_b7_lora_manifest.jsonl"" --labeled-list ""$LABELS"" --validation-metadata ""$DATA/validation/metadata.jsonl"" --output-root ""$LORA_RUN/data"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,333,"""$SAMPY"" scripts/train_sam3_lora_kvasir_e50.py --config configs/isic18_round1_sam3knn_s256_b0_b6_medsam3_lora_e50.yaml --device ""$DEVICE"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,356,"""$SAMPY"" scripts/merge_sam3_lora_video_checkpoint.py --base-checkpoint ""$BASE_CKPT"" --lora-weights ""$LORA_WEIGHTS"" --output ""$MERGED"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,368,"""$SAMPY"" scripts/eval_route_propagation_quality.py --checkpoint ""$MERGED"" --mode ""$mode"" --root ""$ROUND2A/quality_root"" --split ""$split"" --canvas 256 --resume >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,376,"""$SAMPY"" scripts/summarize_c0_256_bridge_metrics.py --quality-root ""$ROUND2A/quality_root"" --split ""$split"" --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --output-json ""$ROUND2A/two_mode_b0_b6_${split}.json"" --output-tsv ""$ROUND2A/two_mode_b0_b6_${split}.tsv"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,383,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUND2A/quality_root"" --student-predictions ""$ROUND1/predictions/X3_best/student_predictions_validation.jsonl"" --split validation --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 --output ""$ROUND2A/b7_calibration/validation_all.jsonl"" --summary ""$ROUND2A/b7_calibration/validation_all.summary.json"" --all-candidates-output ""$ROUND2A/b7_calibration/validation_all_candidates.jsonl"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,392,"""$SAMPY"" scripts/summarize_round2a_b7_calibration.py --manifest ""$ROUND2A/b7_calibration/validation_all.jsonl"" --target-dice ""${ISIC_B7_TARGET_DICE:-0.90}"" --output-json ""$ROUND2A/b7_calibration/calibration_frontier.json"" --output-tsv ""$ROUND2A/b7_calibration/calibration_frontier.tsv"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,398,"THRESHOLD=$(""$SAMPY"" - ""$ROUND2A/b7_calibration/calibration_frontier.json"" <<'PY'",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,405,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUND2A/quality_root"" --student-predictions ""$ROUND1/predictions/X3_best/student_predictions_train.jsonl"" --split train --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 ""$THRESHOLD"" --canvas 256 --sample-type original --output ""$ROUND2A/manifests/x4_train_b7_raw.jsonl"" --summary ""$ROUND2A/manifests/x4_train_b7_raw.summary.json"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,414,"""$SAMPY"" scripts/prepare_round2a_x4_manifest.py --b7-manifest ""$ROUND2A/manifests/x4_train_b7_raw.jsonl"" --x3-reference ""$ROUND1/pseudo_manifest_x3.jsonl"" --output ""$ROUND2A/manifests/x4_train_b7.jsonl"" --summary ""$ROUND2A/manifests/x4_train_b7.summary.json"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,420,"""$MKPY"" scripts/run_s27_student.py --data-path ""$DATA"" --labeled-list ""$LABELS"" --pseudo-manifest ""$ROUND2A/manifests/x4_train_b7.jsonl"" --output-dir ""$ROUND2A/students/X4"" --experiment X4_isic18_round2a --seed 2026 --batch-size 12 --gt-bs 3 --original-bs 3 --new-bs 6 --max-iterations 40000 --val-interval 200 --num-workers 8 --resume >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,428,"""$MKPY"" scripts/export_t25_student_predictions.py --run-dir ""$ROUND2A/students/X4"" --checkpoint ""$ROUND2A/students/X4/student_best.pth"" --output-root ""$ROUND2A/predictions/X4_best"" --splits validation test >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_isic18_round1_round2a_from_pvf.sh,436,"""$SAMPY"" scripts/build_c0_256_b7_lora_manifest.py --quality-root ""$ROUND2A/quality_root"" --student-predictions ""$pred"" --split test --modes ""${MODES[@]}"" --min-bridge 0 --max-bridge 6 --min-b7 0 --canvas 256 --output ""$ROUND2A/${name}_test_b7.jsonl"" --summary ""$ROUND2A/${name}_test_b7.summary.json"" >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/run_sam3enc_anchor_ablation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_sam3enc_anchor_ablation.sh,12,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_validation.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_validation.sh,11,bash scripts/run_c0_256_sam3knn_s256_validation.sh,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_checkpoint_queue.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_b7_lora_checkpoint_queue.sh,8,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_b0_b6_lora_validation_queue.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_b0_b6_lora_validation_queue.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_sam3enc_anchor_multiseed.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_sam3enc_anchor_multiseed.sh,11,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_eval_base.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_stage1_eval_base.sh,4,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_e50.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_e50.sh,12,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_pipeline.py,107,"sam3_py = cfg[""sam3_python""]",auto-extracted; verify shell variables for exact rerun
+scripts/run_pipeline.py,108,"student_py = cfg[""student_python""]",auto-extracted; verify shell variables for exact rerun
+scripts/supervise_lora_p491.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_lora_p491.sh,14,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_b0_b6_lora_validation_queue.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_sam3knn_s256_b0_b6_lora_validation_queue.sh,15,"env DEVICE=""$DEVICE"" bash scripts/run_c0_256_sam3knn_s256_b0_b6_lora_validation_queue.sh >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun
+scripts/merge_sam3_lora_video_checkpoint.py,9,python scripts/merge_sam3_lora_video_checkpoint.py --base-checkpoint <sam3.pt> --lora-weights <epoch_N_lora_weights.pt> --rank 16 --alpha 32 --dropout 0.1 --output <merged_video.pt>,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_target_gpu0.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_train_target_gpu0.sh,7,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/compare_mask_vs_box_prompt.py,16,python scripts/compare_mask_vs_box_prompt.py --root work/kvasir_1pct_anchors/stage1_feature_knn_b7_ftround2_ckpt1 --checkpoint work/kvasir_1pct_anchors/video_checkpoints/round2_ckpt1_merged_video.pt --split test --canvas 512 --min-bridge 3 --max-bridge 6,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_students.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_students.sh,6,PY=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round3_lora.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_round3_lora.sh,4,PY=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,15,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1203,"print(f""   python validate_sam3_lora.py \\"")",auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1268,python train_sam3_lora_native.py --config configs/full_lora_config.yaml,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1271,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1274,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1277,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/train_sam3_lora_kvasir.py,1280,python train_sam3_lora_native.py --config configs/full_lora_config.yaml --device 0 1 2 3,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_current_test_gpu1.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_current_test_gpu1.sh,10,PY_SAM3=/home/violet/anaconda3/envs/sam3/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/run_c0_256_sam3knn_s256_current_test_gpu1.sh,11,PY_STUDENT=/home/violet/anaconda3/envs/mkunet_mamba/bin/python,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_checkpoint_queue.sh,1,#!/usr/bin/env bash,auto-extracted; verify shell variables for exact rerun
+scripts/supervise_c0_256_b7_lora_checkpoint_queue.sh,14,"env DEVICE=""$DEVICE"" bash scripts/run_c0_256_b7_lora_checkpoint_queue.sh >> ""$LOG"" 2>&1",auto-extracted; verify shell variables for exact rerun

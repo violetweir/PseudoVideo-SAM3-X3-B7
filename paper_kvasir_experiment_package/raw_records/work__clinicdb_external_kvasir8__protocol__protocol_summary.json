@@ -1,0 +1,13 @@
+{
+  "bridge_pool": "Kvasir-SEG train only",
+  "bridge_pool_count": 800,
+  "clinicdb_train_or_validation_included": false,
+  "name": "ClinicDB external transfer with frozen Kvasir-8 support",
+  "records_sha256": "13b5d87cec433b6629475b8e43a1de38cf5330152df2f981f0889e245dbf1228",
+  "support_count": 8,
+  "support_sha256": "15746c3f00a897ed36a2a32cfb1108a697db2e08bff0d99b88af459b6c701dab",
+  "support_source": "Kvasir-SEG train only",
+  "target_count": 61,
+  "target_gt_role": "evaluation_only",
+  "target_source": "CVC-ClinicDB test only"
+}

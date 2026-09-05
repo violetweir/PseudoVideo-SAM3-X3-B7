@@ -1,0 +1,54 @@
+{
+  "max6_summary": {
+    "max_bridge_5": {
+      "dice_mean": 0.8980551803370835,
+      "dice_std": 0.14307622511040222,
+      "n": 100,
+      "route_type_counts": {
+        "bridge_1": 19,
+        "bridge_2": 23,
+        "bridge_3": 9,
+        "bridge_4": 14,
+        "bridge_5": 16,
+        "direct": 19
+      }
+    },
+    "max_bridge_6": {
+      "dice_mean": 0.9026433737406819,
+      "dice_std": 0.1254821895842468,
+      "n": 100,
+      "route_type_counts": {
+        "bridge_1": 14,
+        "bridge_2": 17,
+        "bridge_3": 8,
+        "bridge_4": 18,
+        "bridge_5": 11,
+        "bridge_6": 15,
+        "direct": 17
+      }
+    }
+  },
+  "name": "ft_1pct_repro_20260806",
+  "route3_summary": {
+    "test_pool0": {
+      "accepted_count": 0,
+      "by_dataset": {
+        "kvasir-seg": {
+          "dice_mean": 0.8868502295499616,
+          "n": 100
+        }
+      },
+      "dice_mean": 0.8868502295499616,
+      "dice_std": 0.16288310200172754,
+      "n": 100,
+      "quality_gt_dice_pearson": 0.13649967270516639,
+      "quality_gt_dice_spearman": 0.4105850585058506,
+      "quality_mean": 0.9227945689254982,
+      "route_type_counts": {
+        "direct": 35,
+        "one_bridge": 33,
+        "two_bridges": 32
+      }
+    }
+  }
+}

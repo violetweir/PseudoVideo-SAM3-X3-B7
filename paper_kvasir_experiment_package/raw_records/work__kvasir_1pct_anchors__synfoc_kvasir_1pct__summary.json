@@ -1,0 +1,13 @@
+{
+  "best_validation": {
+    "unet_dice": 0.730003700940694,
+    "unet_iteration": 37500,
+    "sam_dice": 0.7310313864714988,
+    "sam_iteration": 28000
+  },
+  "test": {
+    "images": 100,
+    "unet_dice": 0.7681128137346124,
+    "sam_dice": 0.7615026146752607
+  }
+}

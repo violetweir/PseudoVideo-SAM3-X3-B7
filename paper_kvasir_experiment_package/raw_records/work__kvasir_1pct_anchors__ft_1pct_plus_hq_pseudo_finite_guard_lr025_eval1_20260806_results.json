@@ -1,0 +1,54 @@
+{
+  "max6_summary": {
+    "max_bridge_5": {
+      "dice_mean": 0.8644111041851589,
+      "dice_std": 0.17962269910775525,
+      "n": 100,
+      "route_type_counts": {
+        "bridge_1": 21,
+        "bridge_2": 20,
+        "bridge_3": 13,
+        "bridge_4": 15,
+        "bridge_5": 11,
+        "direct": 20
+      }
+    },
+    "max_bridge_6": {
+      "dice_mean": 0.8603506517207328,
+      "dice_std": 0.18126317174064527,
+      "n": 100,
+      "route_type_counts": {
+        "bridge_1": 19,
+        "bridge_2": 18,
+        "bridge_3": 10,
+        "bridge_4": 13,
+        "bridge_5": 9,
+        "bridge_6": 14,
+        "direct": 17
+      }
+    }
+  },
+  "name": "ft_1pct_plus_hq_pseudo_finite_guard_lr025_eval1_20260806",
+  "route3_summary": {
+    "test_pool0": {
+      "accepted_count": 0,
+      "by_dataset": {
+        "kvasir-seg": {
+          "dice_mean": 0.8366754248088047,
+          "n": 100
+        }
+      },
+      "dice_mean": 0.8366754248088047,
+      "dice_std": 0.2299975870656713,
+      "n": 100,
+      "quality_gt_dice_pearson": 0.4874964770398088,
+      "quality_gt_dice_spearman": 0.2861806180618061,
+      "quality_mean": 0.865146020454841,
+      "route_type_counts": {
+        "direct": 40,
+        "one_bridge": 35,
+        "two_bridges": 25
+      }
+    }
+  }
+}

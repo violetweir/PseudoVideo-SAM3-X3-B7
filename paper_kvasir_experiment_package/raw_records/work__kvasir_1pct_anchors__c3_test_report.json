@@ -1,0 +1,82 @@
+{
+  "frozen_rules": {
+    "rules": {
+      "B_direct": {
+        "selector": "cross_anchor_support",
+        "regret_val": 0.027700806280142043
+      },
+      "C_top1": {
+        "selector": "cross_anchor_support",
+        "regret_val": 0.04113658292112987
+      },
+      "D_all": {
+        "selector": "medoid",
+        "regret_val": 0.05014489993744686
+      }
+    },
+    "tau": 0.85
+  },
+  "test": {
+    "B_direct": {
+      "n_targets": 100,
+      "per_target_mean": 0.8324477213805601,
+      "oracle": 0.9131138947952314,
+      "sel_medoid": 0.871230157201553,
+      "sel_anchor_balanced": 0.871230157201553,
+      "sel_cross_anchor_support": 0.871230157201553,
+      "regret_medoid": 0.04188373759367847,
+      "regret_anchor_balanced": 0.04188373759367847,
+      "regret_cross_anchor_support": 0.04188373759367847,
+      "gain_medoid_vs_mean": 0.03878243582099283,
+      "route_level_rho_Q_gt": 0.6477969755219503,
+      "mean_pair_overlap": 0.3333333333333333,
+      "rho_overlap_vs_absdice_diff": -0.02
+    },
+    "C_top1": {
+      "n_targets": 100,
+      "per_target_mean": 0.8625247764446123,
+      "oracle": 0.929696675143522,
+      "sel_medoid": 0.8952178780084143,
+      "sel_anchor_balanced": 0.8957481924050069,
+      "sel_cross_anchor_support": 0.8947441556650507,
+      "regret_medoid": 0.03447879713510771,
+      "regret_anchor_balanced": 0.03394848273851514,
+      "regret_cross_anchor_support": 0.03495251947847133,
+      "gain_medoid_vs_mean": 0.03269310156380201,
+      "route_level_rho_Q_gt": 0.651170993215218,
+      "mean_pair_overlap": 0.3139160052910053,
+      "rho_overlap_vs_absdice_diff": -0.11521492921492923
+    },
+    "D_all": {
+      "n_targets": 100,
+      "per_target_mean": 0.86964755170889,
+      "oracle": 0.9312318463347796,
+      "sel_medoid": 0.8945387184583722,
+      "sel_anchor_balanced": 0.8942744263989958,
+      "sel_cross_anchor_support": 0.8944820327253035,
+      "regret_medoid": 0.03669312787640744,
+      "regret_anchor_balanced": 0.03695741993578383,
+      "regret_cross_anchor_support": 0.036749813609476156,
+      "gain_medoid_vs_mean": 0.02489116674948222,
+      "route_level_rho_Q_gt": 0.6528830315035696,
+      "mean_pair_overlap": 0.3044544217687075,
+      "rho_overlap_vs_absdice_diff": -0.11282334646485591
+    },
+    "A_within": {
+      "n_targets": 100,
+      "per_target_mean": 0.8946589036060874,
+      "oracle": 0.9312318463347796,
+      "sel_medoid": 0.8945387184583722,
+      "sel_anchor_balanced": 0.8945387184583722,
+      "sel_cross_anchor_support": 0.8945387184583722,
+      "regret_medoid": 0.03669312787640744,
+      "regret_anchor_balanced": 0.03669312787640744,
+      "regret_cross_anchor_support": 0.03669312787640744,
+      "gain_medoid_vs_mean": -0.0001201851477151683
+    },
+    "config": {
+      "tau": 0.85,
+      "eval_dir": "work/kvasir_1pct_anchors/stage1_feature_knn_sam3enc_s1008_lesion_knn/sam3enc_lesion_c3/eval_c3_forward"
+    }
+  }
+}

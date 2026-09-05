@@ -1,0 +1,197 @@
+{
+  "created_at_cst": "2026-09-03 16:37",
+  "project_root": "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7",
+  "target_experiment_root": "work/isic18_round1_round2a_from_pseudovideo_full",
+  "dataset": {
+    "name": "ISIC2018",
+    "train_images": 2075,
+    "validation_images": 259,
+    "test_images": 260,
+    "frozen_labeled_images": 21,
+    "protocol_root": "work/isic18_pseudovideo_full/protocol",
+    "labeled_list": "work/isic18_pseudovideo_full/protocol/frozen_labeled_images.txt",
+    "data_root": "work/isic18_1pct_protocol/data",
+    "resize_cache": "work/isic18_round1_round2a_from_pseudovideo_full/isic_resized_cache_s256"
+  },
+  "main_test_dice": {
+    "synfoc_sam": 0.8733601769570983,
+    "sam3_epoch50_direct_text_only_1008": 0.8749861649724601,
+    "ours_x4_best_student_mask_256": 0.8704142092801437,
+    "ours_x4_best_student_mask_original_size": 0.8701767457620935,
+    "sam3_epoch50_direct_text_only_s256": 0.8680087189369691,
+    "sam3_ep27_direct_text_only": 0.8682181161139423,
+    "ours_x3_best_epoch27_b7_selector_selected_gt_dice": 0.861104218664103,
+    "ours_x4_best_epoch27_b7_selector_selected_gt_dice": 0.8603392616808523,
+    "scsam_sam": 0.8522,
+    "ours_s3_best": 0.8548721257324698,
+    "ours_s2_best": 0.8483414130540559,
+    "synfoc_unet": 0.8413850904851117,
+    "scsam_unet": 0.830954
+  },
+  "students": {
+    "S2": {
+      "best_iteration": 12000,
+      "best_validation_dice": 0.8505887648649707,
+      "test_dice": 0.8483414130540559,
+      "summary": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/students/S2/summary.json"
+    },
+    "S3": {
+      "best_iteration": 26600,
+      "best_validation_dice": 0.8520719688384748,
+      "test_dice": 0.8548721257324698,
+      "summary": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/students/S3/summary.json"
+    },
+    "X3_best": {
+      "diagnostic_best_iteration": 22400,
+      "diagnostic_best_validation_dice": 0.8691817642919956,
+      "test_dice_recomputed": 0.8593771496996625
+    },
+    "X3_final": {
+      "final_iteration": 40000,
+      "final_validation_dice": 0.8648778132111233,
+      "test_dice_recomputed": 0.8644590101163069
+    },
+    "X4_best": {
+      "diagnostic_best_iteration": 24000,
+      "diagnostic_best_validation_dice": 0.8707898054604148,
+      "test_dice_recomputed_256": 0.8704142092801437,
+      "test_dice_recomputed_original_size": 0.8701767457620935
+    },
+    "X4_final": {
+      "final_iteration": 40000,
+      "final_validation_dice": 0.8673747393420984,
+      "test_evaluated": false
+    }
+  },
+  "sam_baselines": {
+    "SynFoC": {
+      "best_validation": {
+        "unet_dice": 0.8540554553304895,
+        "unet_iteration": 32000,
+        "sam_dice": 0.8814066220867678,
+        "sam_iteration": 27500
+      },
+      "test": {
+        "images": 260,
+        "unet_dice": 0.8413850904851117,
+        "sam_dice": 0.8733601769570983
+      },
+      "summary": "work/isic18_1pct_protocol/synfoc/summary.json"
+    },
+    "SCSAM": {
+      "test": {
+        "images": 260,
+        "sam_mean_dice": 0.8522,
+        "sam_mean_iou": 0.768209,
+        "sam_mean_hd95": 22.449473,
+        "sam_mean_asd": 10.110563,
+        "unet_mean_dice": 0.830954,
+        "unet_mean_iou": 0.745383
+      },
+      "rerun_log": "work/isic18_1pct_protocol/logs/scsam_test_best_rerun_20260903_160852.log"
+    }
+  },
+  "lora": {
+    "selected_epoch": 27,
+    "epoch27_direct_val_dice": 0.889317,
+    "weights": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/lora_weights/epoch_27_lora_weights.pt",
+    "merged_checkpoint": "work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_27_merged_video.pt",
+    "text_prompt": "skin lesion"
+  },
+  "sam3_ep27_direct_text_only": {
+    "output": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch27_category_merged.json",
+    "log": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch27_category_merged.log",
+    "split": "test",
+    "count": 260,
+    "direct_dice": 0.8682181161139423,
+    "direct_dice_median": 0.9117580605649,
+    "direct_iou": 0.7922036412810095,
+    "nonempty_rate": 0.9961538461538462,
+    "valid_query_count_mean": 1.146153846153846,
+    "prompt_mode": "category",
+    "actual_category": "skin lesion",
+    "route_propagation": false,
+    "image_prompt": false,
+    "note": "The evaluator JSON protocol.query_text is stale/hard-coded, but the loaded COCO category for this run is skin lesion."
+  },
+  "sam3_epoch50_direct_text_only": {
+    "output": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch50_category_merged.json",
+    "log": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch50_category_merged.log",
+    "merged_checkpoint": "work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_50_merged_video.pt",
+    "merge_summary": "work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_50_merged_video.json",
+    "split": "test",
+    "count": 260,
+    "direct_dice": 0.8749861649724601,
+    "direct_dice_median": 0.9165725613813819,
+    "direct_iou": 0.7990372575050375,
+    "nonempty_rate": 1.0,
+    "valid_query_count_mean": 1.0076923076923077,
+    "prompt_mode": "category",
+    "actual_category": "skin lesion",
+    "route_propagation": false,
+    "image_prompt": false,
+    "note": "The evaluator JSON protocol.query_text is stale/hard-coded, but the loaded COCO category for this run is skin lesion."
+  },
+  "sam3_epoch50_direct_text_only_s256": {
+    "output": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch50_category_merged_s256.json",
+    "log": "work/isic18_round1_round2a_from_pseudovideo_full/round1_sam3knn_s256_base/medsam3_lora_b0_b6_e50/direct_test_epoch50_category_merged_s256.log",
+    "merged_checkpoint": "work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_50_merged_video.pt",
+    "split": "test",
+    "count": 260,
+    "direct_dice": 0.8680087189369691,
+    "direct_iou": 0.7894359026094961,
+    "nonempty_rate": 1.0,
+    "valid_query_count_mean": 1.103846153846154,
+    "prompt_mode": "category",
+    "actual_category": "skin lesion",
+    "route_propagation": false,
+    "image_prompt": false,
+    "effective_source_resolution": 256,
+    "metric_resolution": 256,
+    "model_input_resolution": 1008,
+    "note": "The evaluator JSON protocol.query_text is stale/hard-coded, but the loaded COCO category for this run is skin lesion."
+  },
+  "b7_selector": {
+    "round1_base_x3_best": {
+      "selected_gt_dice_evaluation_only": 0.76154897369253,
+      "oracle_gt_dice_evaluation_only": 0.7881884575958648,
+      "coverage": 1.0
+    },
+    "round2a_epoch27_x3_best": {
+      "selected_gt_dice_evaluation_only": 0.861104218664103,
+      "oracle_gt_dice_evaluation_only": 0.8788119280521406,
+      "coverage": 1.0
+    },
+    "round2a_epoch27_x4_best": {
+      "selected_gt_dice_evaluation_only": 0.8603392616808523,
+      "oracle_gt_dice_evaluation_only": 0.8788119280521406,
+      "coverage": 1.0
+    }
+  },
+  "long_chain_epoch27_b0_b7": {
+    "combined": [0.8505455313557161, 0.8512502631229326, 0.8583584919302379, 0.8517938714729478, 0.8534155080311894, 0.8574235355774249, 0.8570553983216923, 0.003139324805169677],
+    "target_pooling": [0.8528897716916908, 0.8452341584710281, 0.8560945212674225, 0.857644859289984, 0.8561421098952162, 0.8588486880828432, 0.858306749098459, 0.003307315782510914],
+    "patch_correspondence": [0.8482012910197415, 0.8572663677748373, 0.8606224625930534, 0.845942883655912, 0.8506889061671625, 0.8559983830720064, 0.8558040475449255, 0.0029713338278284395],
+    "note": "b7 is abnormal and was not debugged further per instruction"
+  },
+  "target_pooling_bridge_benefit_b0_b6": {
+    "base": {
+      "mean_delta_best_vs_b0": 0.04892440524203175,
+      "median_delta_best_vs_b0": 0.007677514200226665,
+      "positive_ge_001": 115,
+      "positive_ge_003": 61,
+      "positive_ge_005": 42,
+      "negative_lt_0": 64,
+      "targets": 260
+    },
+    "lora_epoch27": {
+      "mean_delta_best_vs_b0": 0.017000516918711912,
+      "median_delta_best_vs_b0": 0.0018697656735028878,
+      "positive_ge_001": 58,
+      "positive_ge_003": 29,
+      "positive_ge_005": 16,
+      "negative_lt_0": 71,
+      "targets": 260
+    }
+  }
+}

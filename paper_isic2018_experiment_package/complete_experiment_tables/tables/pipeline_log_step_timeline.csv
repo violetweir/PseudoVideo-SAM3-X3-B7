@@ -1,0 +1,239 @@
+log,line,timestamp,tag,step_message
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,1,2026-08-28 17:02:55,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,2,2026-08-28 17:02:55,isic18-r1-r2a,"route generation start, protocol=work/isic18_pseudovideo_full/protocol"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,3,2026-08-28 17:02:55,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling train
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,4,2026-08-28 18:17:07,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling validation
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,5,2026-08-28 18:27:05,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling test
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,6,2026-08-28 18:37:10,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence train
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,7,2026-08-28 19:52:41,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence validation
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,8,2026-08-28 20:02:37,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence test
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,9,2026-08-28 20:12:41,isic18-r1-r2a,routes complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,10,2026-08-28 20:12:41,isic18-r1-r2a,base SAM3 propagation start on GPU=0
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,11,2026-08-28 20:12:41,isic18-r1-r2a,base propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,12,2026-08-28 21:51:56,isic18-r1-r2a,base propagation split=validation mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,13,2026-08-28 23:27:47,isic18-r1-r2a,base propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,14,2026-08-29 11:20:20,isic18-r1-r2a,base propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,15,2026-08-29 22:27:15,isic18-r1-r2a,base propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,16,2026-08-30 00:00:44,isic18-r1-r2a,base propagation split=test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,17,2026-08-30 01:29:48,isic18-r1-r2a,base propagation complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,18,2026-08-30 01:29:48,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,19,2026-08-30 01:30:18,isic18-r1-r2a,train S2
+work/isic18_round1_round2a_from_pseudovideo_full/nohup.log,20,2026-08-30 14:58:50,isic18-r1-r2a,export S2 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,1,2026-09-01 02:12:18,isic18-e27-longchain-test-gpu1,"start, CUDA_VISIBLE_DEVICES=1 checkpoint=work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_27_merged_video.pt"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,2,2026-09-01 02:12:18,isic18-e27-longchain-test-gpu1,generate test routes b0-b7 mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,3,2026-09-01 02:26:14,isic18-e27-longchain-test-gpu1,evaluate epoch27 SAM3 long-chain test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,4,2026-09-01 05:00:54,isic18-e27-longchain-test-gpu1,generate test routes b0-b7 mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,5,2026-09-01 05:14:32,isic18-e27-longchain-test-gpu1,evaluate epoch27 SAM3 long-chain test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,6,2026-09-01 07:38:31,isic18-e27-longchain-test-gpu1,summarize long-chain test b0-b7
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_epoch27_longchain_test_gpu1.log,7,2026-09-01 07:38:31,isic18-e27-longchain-test-gpu1,complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,1,2026-08-30 15:01:30,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,2,2026-08-30 15:01:30,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,3,2026-08-30 15:01:30,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,4,2026-08-30 15:01:30,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,5,2026-08-30 15:02:02,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,6,2026-08-30 15:02:02,isic18-r1-r2a,export S2 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,7,2026-08-30 15:06:13,isic18-r1-r2a,export S2 student_final.pth
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume.log,8,2026-08-30 15:09:58,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,1,2026-08-30 19:27:38,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,2,2026-08-30 19:27:38,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,3,2026-08-30 19:27:38,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,4,2026-08-30 19:27:38,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,5,2026-08-30 19:27:38,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,6,2026-08-30 19:28:04,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,7,2026-08-30 19:28:04,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,8,2026-08-30 19:28:04,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,9,2026-08-30 19:28:04,isic18-r1-r2a,train S3 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,10,2026-08-30 19:28:04,isic18-r1-r2a,export S3 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,11,2026-08-30 19:28:04,isic18-r1-r2a,export S3 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,12,2026-08-30 19:28:04,isic18-r1-r2a,audit tiers and train X3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,13,2026-08-30 20:10:46,isic18-r1-r2a,Round1 S2/S3/X3 complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_after_auditfix.log,14,2026-08-30 20:10:46,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,1,2026-08-30 16:36:30,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,2,2026-08-30 16:36:30,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,3,2026-08-30 16:36:30,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,4,2026-08-30 16:36:30,isic18-r1-r2a,prepare resized cache start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,5,2026-08-30 16:36:30,isic18-r1-r2a,prepare resized cache complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,6,2026-08-30 16:36:30,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,7,2026-08-30 16:36:57,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,8,2026-08-30 16:36:57,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,9,2026-08-30 16:36:57,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,10,2026-08-30 16:36:57,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,11,2026-08-30 18:30:51,isic18-r1-r2a,export S3 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,12,2026-08-30 18:34:39,isic18-r1-r2a,export S3 student_final.pth
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_cache.log,13,2026-08-30 18:38:28,isic18-r1-r2a,audit tiers and train X3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,1,2026-08-30 20:16:51,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,2,2026-08-30 20:16:51,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,3,2026-08-30 20:16:51,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,4,2026-08-30 20:16:51,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,5,2026-08-30 20:16:51,isic18-r1-r2a,Round1 students already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_relpath.log,6,2026-08-30 20:16:51,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,1,2026-08-30 20:18:08,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,2,2026-08-30 20:18:08,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,3,2026-08-30 20:18:08,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,4,2026-08-30 20:18:08,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,5,2026-08-30 20:18:08,isic18-r1-r2a,Round1 students already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,6,2026-08-30 20:18:08,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,7,2026-09-01 13:04:51,isic18-r1-r2a,Round1 LoRA complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,8,2026-09-01 13:04:51,isic18-r1-r2a,Round2A start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,9,2026-09-01 13:05:08,isic18-r1-r2a,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,10,2026-09-01 13:05:20,isic18-r1-r2a,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,11,2026-09-01 14:14:49,isic18-r1-r2a,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_lora_symlink.log,12,2026-09-01 15:48:30,isic18-r1-r2a,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,1,2026-08-30 15:22:34,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,2,2026-08-30 15:22:34,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,3,2026-08-30 15:22:34,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,4,2026-08-30 15:22:34,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,5,2026-08-30 15:22:59,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,6,2026-08-30 15:22:59,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,7,2026-08-30 15:22:59,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8.log,8,2026-08-30 15:22:59,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,1,2026-08-30 15:27:03,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,2,2026-08-30 15:27:03,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,3,2026-08-30 15:27:03,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,4,2026-08-30 15:27:03,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,5,2026-08-30 15:27:29,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,6,2026-08-30 15:27:29,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,7,2026-08-30 15:27:29,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_resume_workers8_longsampler.log,8,2026-08-30 15:27:29,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,1,2026-08-31 23:47:02,isic18-r2a-e27-gpu1,"Round2A epoch27 start, CUDA_VISIBLE_DEVICES=1"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,2,2026-08-31 23:47:02,isic18-r2a-e27-gpu1,merge LoRA epoch 27
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,3,2026-08-31 23:47:19,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,4,2026-09-01 12:39:34,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,5,2026-09-01 14:15:46,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1.log,6,2026-09-01 15:52:31,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,1,2026-09-01 20:09:40,isic18-r2a-e27-gpu1,"Round2A epoch27 start, CUDA_VISIBLE_DEVICES=1"
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,2,2026-09-01 20:09:40,isic18-r2a-e27-gpu1,merge LoRA epoch 27
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,3,2026-09-01 20:10:14,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,4,2026-09-02 07:41:46,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,5,2026-09-02 09:14:00,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,6,2026-09-02 10:46:09,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,7,2026-09-02 21:52:06,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,8,2026-09-02 23:27:47,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,9,2026-09-03 01:03:49,isic18-r2a-e27-gpu1,summarize bridge metrics split=train
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,10,2026-09-03 01:03:50,isic18-r2a-e27-gpu1,summarize bridge metrics split=validation
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,11,2026-09-03 01:03:50,isic18-r2a-e27-gpu1,summarize bridge metrics split=test
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,12,2026-09-03 01:03:51,isic18-r2a-e27-gpu1,build validation B7 calibration
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,13,2026-09-03 01:03:55,isic18-r2a-e27-gpu1,selected threshold=0.7374556633067417
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,14,2026-09-03 01:04:27,isic18-r2a-e27-gpu1,train X4
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,15,2026-09-03 01:44:28,isic18-r2a-e27-gpu1,export X4 best
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,16,2026-09-03 01:45:19,isic18-r2a-e27-gpu1,build test B7 summary for X3_best
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,17,2026-09-03 01:45:22,isic18-r2a-e27-gpu1,build test B7 summary for X4_best
+work/isic18_round1_round2a_from_pseudovideo_full/nohup_round2a_epoch27_gpu1_clean_20260901.log,18,2026-09-03 01:45:25,isic18-r2a-e27-gpu1,Round2A epoch27 complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,1,2026-08-28 17:02:55,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,2,2026-08-28 17:02:55,isic18-r1-r2a,"route generation start, protocol=work/isic18_pseudovideo_full/protocol"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,3,2026-08-28 17:02:55,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling train
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,221,2026-08-28 18:17:07,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling validation
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,259,2026-08-28 18:27:05,isic18-r1-r2a,routes sam3enc_anchor_conditioned_target_pooling test
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,298,2026-08-28 18:37:10,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence train
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,516,2026-08-28 19:52:41,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence validation
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,554,2026-08-28 20:02:37,isic18-r1-r2a,routes sam3enc_anchor_conditioned_patch_correspondence test
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,677,2026-08-28 20:12:41,isic18-r1-r2a,routes complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,678,2026-08-28 20:12:41,isic18-r1-r2a,base SAM3 propagation start on GPU=0
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,679,2026-08-28 20:12:41,isic18-r1-r2a,base propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,23422,2026-08-28 21:51:56,isic18-r1-r2a,base propagation split=validation mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,46317,2026-08-28 23:27:47,isic18-r1-r2a,base propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,226300,2026-08-29 11:20:20,isic18-r1-r2a,base propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,406405,2026-08-29 22:27:15,isic18-r1-r2a,base propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,429211,2026-08-30 00:00:44,isic18-r1-r2a,base propagation split=test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,452078,2026-08-30 01:29:48,isic18-r1-r2a,base propagation complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,452079,2026-08-30 01:29:48,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,452120,2026-08-30 01:30:18,isic18-r1-r2a,train S2
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467659,2026-08-30 14:58:50,isic18-r1-r2a,export S2 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467668,2026-08-30 15:01:30,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467669,2026-08-30 15:01:30,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467670,2026-08-30 15:01:30,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467671,2026-08-30 15:01:30,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467712,2026-08-30 15:02:02,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467713,2026-08-30 15:02:02,isic18-r1-r2a,export S2 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467717,2026-08-30 15:06:13,isic18-r1-r2a,export S2 student_final.pth
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,467721,2026-08-30 15:09:58,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468163,2026-08-30 15:22:34,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468164,2026-08-30 15:22:34,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468165,2026-08-30 15:22:34,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468166,2026-08-30 15:22:34,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468207,2026-08-30 15:22:59,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468208,2026-08-30 15:22:59,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468209,2026-08-30 15:22:59,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468210,2026-08-30 15:22:59,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468343,2026-08-30 15:27:03,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468344,2026-08-30 15:27:03,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468345,2026-08-30 15:27:03,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468386,2026-08-30 15:27:29,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468387,2026-08-30 15:27:29,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468388,2026-08-30 15:27:29,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,468389,2026-08-30 15:27:29,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469339,2026-08-30 16:36:30,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469340,2026-08-30 16:36:30,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469341,2026-08-30 16:36:30,isic18-r1-r2a,prepare resized cache start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469345,2026-08-30 16:36:30,isic18-r1-r2a,prepare resized cache complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469346,2026-08-30 16:36:30,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469387,2026-08-30 16:36:57,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469388,2026-08-30 16:36:57,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469389,2026-08-30 16:36:57,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,469390,2026-08-30 16:36:57,isic18-r1-r2a,train S3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486458,2026-08-30 18:30:51,isic18-r1-r2a,export S3 student_best.pth
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486462,2026-08-30 18:34:39,isic18-r1-r2a,export S3 student_final.pth
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486466,2026-08-30 18:38:28,isic18-r1-r2a,audit tiers and train X3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486474,2026-08-30 19:27:38,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486475,2026-08-30 19:27:38,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486476,2026-08-30 19:27:38,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486477,2026-08-30 19:27:38,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486478,2026-08-30 19:27:38,isic18-r1-r2a,Round1 pseudo pool + S2/S3/X3 start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486519,2026-08-30 19:28:04,isic18-r1-r2a,train S2 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486520,2026-08-30 19:28:04,isic18-r1-r2a,export S2 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486521,2026-08-30 19:28:04,isic18-r1-r2a,export S2 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486522,2026-08-30 19:28:04,isic18-r1-r2a,train S3 already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486523,2026-08-30 19:28:04,isic18-r1-r2a,export S3 student_best.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486524,2026-08-30 19:28:04,isic18-r1-r2a,export S3 student_final.pth already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486525,2026-08-30 19:28:04,isic18-r1-r2a,audit tiers and train X3
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486664,2026-08-30 20:10:46,isic18-r1-r2a,Round1 S2/S3/X3 complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486665,2026-08-30 20:10:46,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486771,2026-08-30 20:16:51,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486772,2026-08-30 20:16:51,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486773,2026-08-30 20:16:51,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486774,2026-08-30 20:16:51,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486775,2026-08-30 20:16:51,isic18-r1-r2a,Round1 students already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486776,2026-08-30 20:16:51,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486880,2026-08-30 20:18:08,isic18-r1-r2a,"pipeline begin, DEVICE=0"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486881,2026-08-30 20:18:08,isic18-r1-r2a,routes already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486882,2026-08-30 20:18:08,isic18-r1-r2a,base propagation already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486883,2026-08-30 20:18:08,isic18-r1-r2a,resized cache already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486884,2026-08-30 20:18:08,isic18-r1-r2a,Round1 students already complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,486885,2026-08-30 20:18:08,isic18-r1-r2a,Round1 B7 calibration + LoRA start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,676791,2026-09-01 13:04:51,isic18-r1-r2a,Round1 LoRA complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,676792,2026-09-01 13:04:51,isic18-r1-r2a,Round2A start
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,676824,2026-09-01 13:05:08,isic18-r1-r2a,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,676871,2026-09-01 13:05:20,isic18-r1-r2a,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,692300,2026-09-01 14:14:49,isic18-r1-r2a,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline.log,715117,2026-09-01 15:48:30,isic18-r1-r2a,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,1,2026-09-01 02:12:18,isic18-e27-longchain-test-gpu1,"start, CUDA_VISIBLE_DEVICES=1 checkpoint=work/isic18_round1_round2a_from_pseudovideo_full/round2a_fixed_knn_lora_teacher/lora_epoch_27_merged_video.pt"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,2,2026-09-01 02:12:18,isic18-e27-longchain-test-gpu1,generate test routes b0-b7 mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,41,2026-09-01 02:26:14,isic18-e27-longchain-test-gpu1,evaluate epoch27 SAM3 long-chain test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,26651,2026-09-01 05:00:54,isic18-e27-longchain-test-gpu1,generate test routes b0-b7 mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,26690,2026-09-01 05:14:32,isic18-e27-longchain-test-gpu1,evaluate epoch27 SAM3 long-chain test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,53123,2026-09-01 07:38:31,isic18-e27-longchain-test-gpu1,summarize long-chain test b0-b7
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_epoch27_longchain_test_gpu1.log,53281,2026-09-01 07:38:31,isic18-e27-longchain-test-gpu1,complete
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,1,2026-08-31 23:47:02,isic18-r2a-e27-gpu1,"Round2A epoch27 start, CUDA_VISIBLE_DEVICES=1"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,2,2026-08-31 23:47:02,isic18-r2a-e27-gpu1,merge LoRA epoch 27
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,34,2026-08-31 23:47:19,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,181407,2026-09-01 12:39:34,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,204148,2026-09-01 14:15:46,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,226709,2026-09-01 15:52:31,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,301092,2026-09-01 20:09:40,isic18-r2a-e27-gpu1,"Round2A epoch27 start, CUDA_VISIBLE_DEVICES=1"
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,301093,2026-09-01 20:09:40,isic18-r2a-e27-gpu1,merge LoRA epoch 27
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,301125,2026-09-01 20:10:14,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,480575,2026-09-02 07:41:46,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,503316,2026-09-02 09:14:00,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_target_pooling
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,526180,2026-09-02 10:46:09,isic18-r2a-e27-gpu1,Round2A propagation split=train mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,706064,2026-09-02 21:52:06,isic18-r2a-e27-gpu1,Round2A propagation split=validation mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,728783,2026-09-02 23:27:47,isic18-r2a-e27-gpu1,Round2A propagation split=test mode=sam3enc_anchor_conditioned_patch_correspondence
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,751631,2026-09-03 01:03:49,isic18-r2a-e27-gpu1,summarize bridge metrics split=train
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,751771,2026-09-03 01:03:50,isic18-r2a-e27-gpu1,summarize bridge metrics split=validation
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,751911,2026-09-03 01:03:50,isic18-r2a-e27-gpu1,summarize bridge metrics split=test
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752051,2026-09-03 01:03:51,isic18-r2a-e27-gpu1,build validation B7 calibration
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752090,2026-09-03 01:03:55,isic18-r2a-e27-gpu1,selected threshold=0.7374556633067417
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752136,2026-09-03 01:04:27,isic18-r2a-e27-gpu1,train X4
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752217,2026-09-03 01:44:28,isic18-r2a-e27-gpu1,export X4 best
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752220,2026-09-03 01:45:19,isic18-r2a-e27-gpu1,build test B7 summary for X3_best
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752248,2026-09-03 01:45:22,isic18-r2a-e27-gpu1,build test B7 summary for X4_best
+work/isic18_round1_round2a_from_pseudovideo_full/pipeline_round2a_epoch27_gpu1.log,752276,2026-09-03 01:45:25,isic18-r2a-e27-gpu1,Round2A epoch27 complete

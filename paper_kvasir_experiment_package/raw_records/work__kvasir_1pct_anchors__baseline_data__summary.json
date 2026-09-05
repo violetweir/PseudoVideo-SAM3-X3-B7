@@ -1,0 +1,10 @@
+{
+  "counts": {
+    "test": 100,
+    "train": 800,
+    "validation": 100
+  },
+  "note": "Metadata-only adapter for SC-SAM/SynFoC; image and mask paths remain absolute.",
+  "output": "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/kvasir_1pct_anchors/baseline_data",
+  "source_manifest": "/Data_8TB/lht/PseudoVideo-SAM3-X3-B7/work/kvasir_1pct_anchors/protocol/merged_manifest.jsonl"
+}
